@@ -428,7 +428,7 @@ function renderGallery() {
 function openViewer(art) {
   currentArtwork = art;
   zoom = 1;
-  pan = {x:0,y:0};
+  pan = { x: 0, y: 0 };
 
   const daySrc   = art.dayImageDataUrl || art.imageDataUrl || "";
   const nightSrc = art.nightImageDataUrl;
@@ -447,16 +447,24 @@ function openViewer(art) {
     viewerImgNight.style.opacity = 0;
   }
 
-  viewerTitle.textContent = `${art.title} — ${art.artist}`;
-  viewerMeta.textContent = `Size: ${art.widthCm||"?"}×${art.heightCm||"?"} cm • Tags: ${(art.tags||[]).join(", ")||"none"}`;
+  viewerTitle.textContent =
+    `${art.title} — ${art.artist}`;
+  viewerMeta.textContent =
+    `Size: ${art.widthCm || "?"}×${art.heightCm || "?"} cm • ` +
+    `Tags: ${(art.tags || []).join(", ") || "none"}`;
 
   updateViewerTransform();
   updateFavInViewer();
+
+  // show viewer
   viewerEl.classList.remove("hidden");
+  lockBodyScroll();
 }
 
-
-function closeViewer() { viewerEl.classList.add("hidden"); }
+function closeViewer() {
+  viewerEl.classList.add("hidden");
+  unlockBodyScroll();
+}
 
 function updateViewerTransform() {
   // pan.x / pan.y are pixel offsets we apply to the wrapper
