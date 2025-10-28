@@ -97,7 +97,7 @@
         </div>
 
         <!-- main stage with day/night stack -->
-       <div id="viewerStage" class="relative bg-neutral-100 select-none grab flex items-center justify-center overflow-hidden"  style="height:60vh">
+       <div id="viewerStage"  class="relative bg-neutral-900/90 select-none grab flex items-center justify-center overflow-hidden"  style="height:60vh">
         <!-- We'll wrap both images in a single container that we transform -->
         <div id="viewerImgWrapper" class="relative">
         <img
@@ -266,6 +266,8 @@ const resetViewBtn = document.getElementById("resetView");
 const closeViewerBtn = document.getElementById("closeViewer");
 const zoomLabel = document.getElementById("zoomLabel");
 const viewerMeta = document.getElementById("viewerMeta");
+const viewerImgWrapper = document.getElementById("viewerImgWrapper");
+
 
 /* Visualizer refs */
 const roomFile = document.getElementById("roomFile");
@@ -277,6 +279,7 @@ const selectedMeta = document.getElementById("selectedMeta");
 const ovScale = document.getElementById("ovScale");
 const ovRotate = document.getElementById("ovRotate");
 const ovReset = document.getElementById("ovReset");
+  
 
 /* Favorites refs */
 const favoritesGrid = document.getElementById("favoritesGrid");
@@ -430,14 +433,16 @@ function openViewer(art) {
   viewerEl.classList.remove("hidden");
 }
 
+
 function closeViewer() { viewerEl.classList.add("hidden"); }
 
 function updateViewerTransform() {
-  const t = `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
-  viewerImgDay.style.transform = t;
-  viewerImgNight.style.transform = t;
+  // pan.x / pan.y are pixel offsets we apply to the wrapper
+  const t = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
+  viewerImgWrapper.style.transform = t;
   zoomLabel.textContent = Math.round(zoom*100) + "%";
 }
+
 
 // zoom / pan events
 zoomInBtn.addEventListener("click", ()=>{
