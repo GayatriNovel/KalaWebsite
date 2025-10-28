@@ -467,10 +467,9 @@ function closeViewer() {
 }
 
 function updateViewerTransform() {
-  // pan.x / pan.y are pixel offsets we apply to the wrapper
   const t = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
   viewerImgWrapper.style.transform = t;
-  zoomLabel.textContent = Math.round(zoom*100) + "%";
+  zoomLabel.textContent = Math.round(zoom * 100) + "%";
 }
 
 
