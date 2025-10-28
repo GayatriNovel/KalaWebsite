@@ -465,6 +465,9 @@ function closeViewer() {
   viewerEl.classList.add("hidden");
   unlockBodyScroll();
 }
+closeViewerBtn.addEventListener("click", closeViewer);
+viewerBackdrop.addEventListener("click", closeViewer);
+
 
 function updateViewerTransform() {
   const t = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
