@@ -1,1 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kala Artist Portal</title>
+  <meta name="description" content="Artist dashboard for Kala. Upload artwork and submit for curation.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="data:,"/>
+  <style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-900">
+  <header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold">K</div>
+        <div>
+          <div class="text-xl font-semibold tracking-tight leading-none">Kala</div>
+          <div class="text-[11px] text-neutral-500 leading-none">
+            Artist Portal · private
+          </div>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="text-xs px-3 py-1.5 rounded-xl border hidden">
+        Log out
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-10 pb-24">
+    <!-- LOGIN SCREEN -->
+    <section id="loginScreen" class="max-w-sm mx-auto border rounded-2xl bg-white shadow-sm p-6">
+      <h1 class="text-lg font-semibold">Artist Login</h1>
+      <p class="text-sm text-neutral-500 mt-1">
+        This area is for contributing artists and Kala curators only.
+      </p>
+
+      <form id="loginForm" class="mt-5 space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-neutral-700 mb-1">Username</label>
+          <input id="loginUser" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="your.name" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-neutral-700 mb-1">Password</label>
+          <input id="loginPass" type="password" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="••••••••" />
+        </div>
+        <button class="w-full rounded-xl bg-neutral-900 text-white py-2 text-sm" type="submit">
+          Sign in
+        </button>
+        <p id="loginError" class="text-[12px] text-red-600 hidden">
+          Incorrect username or password.
+        </p>
+      </form>
+
+      <p class="text-[11px] text-neutral-400 text-center mt-6 leading-snug">
+        Your uploads are not public immediately. A curator must approve
+        them before they appear on Kala.
+      </p>
+    </section>
+
+    <!-- DASHBOARD SCREEN -->
+    <section id="dashScreen" class="hidden space-y-10">
+
+      <!-- Upload Artwork Card -->
+      <div class="border rounded-2xl bg-white shadow-sm">
+        <div class="px-4 py-3 border-b flex items-center justify-between">
+          <div>
+            <div class="text-lg font-semibold">Upload Artwork</div>
+            <div class="text-xs text-neutral-500">
+              Daylight photo is required. Night / warm-light photo is optional.
+            </div>
+          </div>
+          <div class="text-[11px] text-neutral-400">
+            Saved locally · no server
+          </div>
+        </div>
+
+        <form id="uploadForm" class="p-4 grid md:grid-cols-2 gap-4">
+          <!-- Images column -->
+          <div class="space-y-5 rounded-2xl bg-neutral-50 p-4 border">
+            <div>
+              <div class="text-sm text-neutral-700 font-medium mb-1">Day / normal light *</div>
+              <input id="artFileDay" type="file" accept="image/*" capture="environment" class="block w-full text-sm" required />
+              <p class="text-[11px] text-neutral-500 mt-1">
+                Clear, front-on photo of the work in natural/neutral lighting.
+              </p>
+            </div>
+
+            <div>
+              <div class="text-sm text-neutral-700 font-medium mb-1">Night / warm light (optional)</div>
+              <input id="artFileNight" type="file" accept="image/*" capture="environment" class="block w-full text-sm" />
+              <p class="text-[11px] text-neutral-500 mt-1">
+                Upload only if the artwork looks visibly different in evening lighting.
+              </p>
+            </div>
+          </div>
+
+          <!-- Metadata column -->
+          <div class="grid gap-3">
+            <div>
+              <label class="block text-xs font-medium text-neutral-700 mb-1">Title *</label>
+              <input id="titleInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Ex: Midnight Rain" required />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-neutral-700 mb-1">Artist name *</label>
+              <input id="artistInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Your name / studio" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-neutral-700 mb-1">Width (cm)</label>
+                <input id="widthInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="60" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-neutral-700 mb-1">Height (cm)</label>
+                <input id="heightInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="90" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-neutral-700 mb-1">Tags (comma separated)</label>
+              <input id="tagsInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="abstract, warm, texture" />
+            </div>
+
+            <button class="px-4 py-2 rounded-xl bg-neutral-900 text-white text-sm w-full md:w-auto" type="submit">
+              Submit for review
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pending / Curator Desk -->
+      <div class="border rounded-2xl bg-white shadow-sm">
+        <div class="px-4 py-3 border-b flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+          <div>
+            <div class="text-lg font-semibold">Pending Review</div>
+            <div class="text-xs text-neutral-500">
+              These pieces are waiting for curator approval. They are not yet visible in the public Kala gallery.
+            </div>
+          </div>
+          <div class="text-[11px] text-neutral-400">
+            Curator can approve or remove below.
+          </div>
+        </div>
+
+        <div id="curatorList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <p id="noPending" class="p-4 text-sm text-neutral-500 hidden">
+          Nothing pending — all caught up.
+        </p>
+      </div>
+
+      <!-- Approved / Live -->
+      <div class="border rounded-2xl bg-white shadow-sm">
+        <div class="px-4 py-3 border-b flex items-center justify-between">
+          <div>
+            <div class="text-lg font-semibold">Approved / Live</div>
+            <div class="text-xs text-neutral-500">
+              These artworks are curated and can be seen by buyers on kala (homepage).
+            </div>
+          </div>
+          <a href="index.html" class="text-xs underline text-neutral-600 hover:text-neutral-800">
+            View public site →
+          </a>
+        </div>
+
+        <div id="approvedList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <p id="noApproved" class="p-4 text-sm text-neutral-500 hidden">
+          No approved works yet.
+        </p>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="border-t text-xs text-neutral-500">
+    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div>© <span id="year"></span> Kala · Private artist portal</div>
+      <div>Curated only · No public checkout</div>
+    </div>
+  </footer>
+
+<script>
+/* -------------------------
+   Basic "auth"
+   ------------------------- */
+
+/*
+  This is intentionally simple client-side gating.
+  You can change these credentials to anything you like.
+*/
+const VALID_USER = "artist";
+const VALID_PASS = "kala2025";
+
+const loginScreen = document.getElementById("loginScreen");
+const dashScreen = document.getElementById("dashScreen");
+const loginForm = document.getElementById("loginForm");
+const loginUser = document.getElementById("loginUser");
+const loginPass = document.getElementById("loginPass");
+const loginError = document.getElementById("loginError");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const YEAR_EL = document.getElementById("year");
+
+const AUTH_KEY = "kala:artistAuth:v1"; // localStorage flag
+
+function isAuthed() {
+  return localStorage.getItem(AUTH_KEY) === "true";
+}
+
+function showLogin() {
+  loginScreen.classList.remove("hidden");
+  dashScreen.classList.add("hidden");
+  logoutBtn.classList.add("hidden");
+}
+
+function showDash() {
+  loginScreen.classList.add("hidden");
+  dashScreen.classList.remove("hidden");
+  logoutBtn.classList.remove("hidden");
+}
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const u = loginUser.value.trim();
+  const p = loginPass.value.trim();
+  if (u === VALID_USER && p === VALID_PASS) {
+    localStorage.setItem(AUTH_KEY, "true");
+    loginError.classList.add("hidden");
+    showDash();
+    renderAll(); // make sure UI reflects latest
+  } else {
+    loginError.classList.remove("hidden");
+  }
+});
+
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem(AUTH_KEY);
+  showLogin();
+});
+
+/* init login state */
+if (isAuthed()) {
+  showDash();
+} else {
+  showLogin();
+}
+
+/* -------------------------
+   Shared data model
+   ------------------------- */
+
+const LS_KEY_ART = "curated-art-gallery:v1"; // same as index.html
+// We keep all artworks (pending + approved) in one array, each item:
+// { id, title, artist, widthCm, heightCm, tags[], curated(bool),
+//   dayImageDataUrl, nightImageDataUrl, createdAt }
+
+const uid = () => Math.random().toString(36).slice(2);
+
+function loadArtworks() {
+  const raw = localStorage.getItem(LS_KEY_ART);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  }
+  // seed with 2 demo items if first ever load
+  const seed = [
+    {
+      id: uid(),
+      title: "Quiet Mangroves",
+      artist: "A. Sen",
+      widthCm: 80,
+      heightCm: 60,
+      tags: ["nature","landscape"],
+      curated: true,
+      dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
+      nightImageDataUrl: null,
+      createdAt: Date.now()-86400000*4
+    },
+    {
+      id: uid(),
+      title: "City in Monsoon",
+      artist: "G. Mane",
+      widthCm: 60,
+      heightCm: 90,
+      tags: ["urban","rain"],
+      curated: true,
+      dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
+      nightImageDataUrl: null,
+      createdAt: Date.now()-86400000*2
+    },
+  ];
+  localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));
+  return seed;
+}
+
+function saveArtworks(items) {
+  localStorage.setItem(LS_KEY_ART, JSON.stringify(items));
+}
+
+let artworks = loadArtworks();
+
+/* -------------------------
+   Elements for dashboard
+   ------------------------- */
+
+const uploadFormEl = document.getElementById("uploadForm");
+const artFileDayEl = document.getElementById("artFileDay");
+const artFileNightEl = document.getElementById("artFileNight");
+
+const titleInputEl = document.getElementById("titleInput");
+const artistInputEl = document.getElementById("artistInput");
+const widthInputEl = document.getElementById("widthInput");
+const heightInputEl = document.getElementById("heightInput");
+const tagsInputEl = document.getElementById("tagsInput");
+
+const curatorListEl = document.getElementById("curatorList");
+const noPendingEl = document.getElementById("noPending");
+
+const approvedListEl = document.getElementById("approvedList");
+const noApprovedEl = document.getElementById("noApproved");
+
+/* Utility: convert file to base64 data URL */
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* -------------------------
+   Upload handler
+   ------------------------- */
+uploadFormEl.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!isAuthed()) return; // block if logged out mid-session
+
+  const dayFile = artFileDayEl.files && artFileDayEl.files[0];
+  if (!dayFile) return; // required
+
+  const [dayUrl, nightUrl] = await Promise.all([
+    fileToDataUrl(dayFile),
+    (async () => {
+      const nf = artFileNightEl.files && artFileNightEl.files[0];
+      if (!nf) return null;
+      return fileToDataUrl(nf);
+    })()
+  ]);
+
+  const newItem = {
+    id: uid(),
+    title: (titleInputEl.value || "Untitled").trim(),
+    artist: (artistInputEl.value || "Unknown").trim(),
+    widthCm: parseFloat(widthInputEl.value) || undefined,
+    heightCm: parseFloat(heightInputEl.value) || undefined,
+    tags: (tagsInputEl.value || "")
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean),
+    curated: false, // starts as pending
+    dayImageDataUrl: dayUrl,
+    nightImageDataUrl: nightUrl || null,
+    createdAt: Date.now()
+  };
+
+  artworks = [newItem, ...artworks];
+  saveArtworks(artworks);
+
+  // clear form
+  uploadFormEl.reset();
+
+  // refresh lists
+  renderLists();
+});
+
+/* -------------------------
+   Render Pending / Approved
+   ------------------------- */
+
+function renderLists() {
+  const pending = artworks.filter(a => a.curated === false);
+  const approved = artworks.filter(a => a.curated !== false);
+
+  // pending list
+  if (pending.length === 0) {
+    curatorListEl.innerHTML = "";
+    noPendingEl.classList.remove("hidden");
+  } else {
+    noPendingEl.classList.add("hidden");
+    curatorListEl.innerHTML = pending.map(a => `
+      <div class="border rounded-xl overflow-hidden bg-white">
+        <div class="aspect-[3/4] bg-neutral-100">
+          <img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/>
+        </div>
+        <div class="p-3">
+          <div class="font-medium text-sm">${a.title}</div>
+          <div class="text-xs text-neutral-500 mb-2">
+            ${a.artist} • ${(a.tags||[]).join(", ") || "no tags"}
+          </div>
+          <div class="flex gap-2">
+            <button data-approve="${a.id}"
+              class="px-3 py-1 rounded-xl bg-neutral-900 text-white text-xs">
+              Approve
+            </button>
+            <button data-remove="${a.id}"
+              class="px-3 py-1 rounded-xl border text-xs">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // approved list
+  if (approved.length === 0) {
+    approvedListEl.innerHTML = "";
+    noApprovedEl.classList.remove("hidden");
+  } else {
+    noApprovedEl.classList.add("hidden");
+    approvedListEl.innerHTML = approved.map(a => `
+      <div class="border rounded-xl overflow-hidden bg-white">
+        <div class="aspect-[3/4] bg-neutral-100">
+          <img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/>
+        </div>
+        <div class="p-3">
+          <div class="font-medium text-sm">${a.title}</div>
+          <div class="text-xs text-neutral-500 mb-2">
+            ${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm
+          </div>
+          <div class="text-[11px] text-neutral-400">
+            Tags: ${(a.tags||[]).join(", ") || "none"}
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // attach curator action handlers
+  curatorListEl.querySelectorAll("[data-approve]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-approve");
+      artworks = artworks.map(x =>
+        x.id === id ? { ...x, curated: true } : x
+      );
+      saveArtworks(artworks);
+      renderLists();
+    });
+  });
+  curatorListEl.querySelectorAll("[data-remove]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-remove");
+      artworks = artworks.filter(x => x.id !== id);
+      saveArtworks(artworks);
+      renderLists();
+    });
+  });
+}
+
+/* -------------------------
+   Init
+   ------------------------- */
+
+function renderAll() {
+  YEAR_EL.textContent = new Date().getFullYear();
+  renderLists();
+}
+
+// Render now if logged in
+if (isAuthed()) {
+  renderAll();
+}
+</script>
+</body>
+</html>
 
