@@ -80,54 +80,64 @@
     </section>
 
     <!-- VIEWER DIALOG -->
-    <div id="viewer" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Artwork viewer">
-      <div class="bg-white rounded-xl max-w-4xl w-full overflow-hidden">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <div class="flex flex-col">
-            <div id="viewerTitle" class="text-sm md:text-base font-semibold"></div>
-            <button id="favToggleViewer" class="text-xs text-neutral-500 text-left">♡ Save to favorites</button>
-          </div>
-          <div class="flex items-center gap-2">
-            <button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out">-</button>
-            <div id="zoomLabel" class="w-16 text-center text-xs" aria-live="polite">100%</div>
-            <button id="zoomIn" class="px-2 py-1 border rounded" aria-label="Zoom in">+</button>
-            <button id="resetView" class="px-2 py-1" aria-label="Reset view">Reset</button>
-            <button id="closeViewer" class="px-2 py-1" aria-label="Close viewer">✕</button>
-          </div>
-        </div>
+    <div id="viewer" class="fixed inset-0 z-[9999] hidden" aria-modal="true" role="dialog" aria-label="Artwork viewer">
+  <!-- Backdrop -->
+  <div id="viewerBackdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
 
-        <!-- main stage with day/night stack -->
-       <div id="viewerStage"  class="relative bg-neutral-900/90 select-none grab flex items-center justify-center overflow-hidden"  style="height:60vh">
-        <!-- We'll wrap both images in a single container that we transform -->
-        <div id="viewerImgWrapper" class="relative">
+  <!-- Dialog panel -->
+  <div class="relative max-w-4xl w-[90vw] max-h-[90vh] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <!-- Header row with title + controls -->
+    <div class="flex items-center justify-between px-4 py-3 border-b bg-white/90">
+      <div class="flex flex-col">
+        <div id="viewerTitle" class="text-sm md:text-base font-semibold"></div>
+        <button id="favToggleViewer" class="text-xs text-neutral-500 text-left">♡ Save to favorites</button>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs">
+        <button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out">-</button>
+        <div id="zoomLabel" class="w-16 text-center text-[11px]" aria-live="polite">100%</div>
+        <button id="zoomIn" class="px-2 py-1 border rounded" aria-label="Zoom in">+</button>
+        <button id="resetView" class="px-2 py-1 border rounded text-[11px]" aria-label="Reset view">Reset</button>
+
+        <!-- CLOSE BUTTON -->
+        <button id="closeViewer" class="ml-2 px-2 py-1 rounded bg-neutral-900 text-white text-[11px]" aria-label="Close viewer">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Stage area -->
+    <div id="viewerStage" class="relative flex-1 bg-neutral-900/90 select-none grab flex items-center justify-center overflow-hidden">
+      <div id="viewerImgWrapper" class="relative transition-transform duration-150 ease-out">
         <img
           id="viewerImgDay"
-          class="block max-h-[60vh] max-w-[90vw] object-contain"
+          class="block max-h-[70vh] max-w-[85vw] object-contain"
           alt="Artwork daylight view"
         />
-      <img
+        <img
           id="viewerImgNight"
-          class="block max-h-[60vh] max-w-[90vw] object-contain absolute inset-0 pointer-events-none"
+          class="block max-h-[70vh] max-w-[85vw] object-contain absolute inset-0 pointer-events-none"
           style="opacity:0;"
           alt="Artwork night view"
         />
       </div>
     </div>
 
-
-        <!-- Lighting slider (hidden if no night version for this artwork) -->
-        <div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2">
-          <div class="flex items-center justify-between text-neutral-600">
-            <span>Daylight</span>
-            <span>Night / Warm light</span>
-          </div>
-          <input id="lightSlider" type="range" min="0" max="100" step="1" value="0" />
-        </div>
-
-        <div id="viewerMeta" class="px-4 py-2 text-xs text-neutral-500"></div>
+    <!-- Lighting slider row -->
+    <div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2">
+      <div class="flex items-center justify-between text-neutral-600">
+        <span>Daylight</span>
+        <span>Night / Warm light</span>
       </div>
+      <input id="lightSlider" type="range" min="0" max="100" step="1" value="0" />
     </div>
 
+    <!-- Meta row -->
+    <div id="viewerMeta" class="px-4 py-2 text-[11px] text-neutral-500 bg-white border-t"></div>
+  </div>
+</div>
+
+       
     <!-- VISUALIZER -->
     <section id="visualize" class="py-10" aria-labelledby="visualize-heading">
       <h3 id="visualize-heading" class="sr-only">Visualize artwork on your wall</h3>
