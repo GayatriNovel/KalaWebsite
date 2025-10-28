@@ -1,1 +1,27 @@
+[
+  {
+    "id": "quiet-mangroves",
+    "title": "Quiet Mangroves",
+    "artist": "A. Sen",
+    "widthCm": 80,
+    "heightCm": 60,
+    "tags": ["nature", "landscape"],
+    "curated": true,
+    "dayImageUrl": "assets/art/quiet-mangroves-day.jpg",
+    "nightImageUrl": "assets/art/quiet-mangroves-night.jpg",
+    "createdAt": 1730110000000
+  },
+  {
+    "id": "city-in-monsoon",
+    "title": "City in Monsoon",
+    "artist": "G. Mane",
+    "widthCm": 60,
+    "heightCm": 90,
+    "tags": ["urban", "rain"],
+    "curated": true,
+    "dayImageUrl": "assets/art/city-in-monsoon-day.jpg",
+    "nightImageUrl": "assets/art/city-in-monsoon-night.jpg",
+    "createdAt": 1730200000000
+  }
+]
 
