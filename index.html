@@ -1,646 +1,667 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kala — Original & Premium Artwork by Women</title>
-  <meta name="description" content="Kala is a curated showcase of original and premium artwork by women. Browse, preview on your wall, and save your favorites.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="data:,"/>
-  <style>
-    .grab { cursor: grab; }
-    .grabbing { cursor: grabbing; }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .fav-active { color: rgb(219 39 119); } /* pink-600 */
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Description" content="Kala is a curated showcase of original and premium artwork by women. Browse, preview on your wall, and save your favorites.">
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 12.0px 'Hiragino Mincho ProN'; font-kerning: none}
+    span.s3 {font: 12.0px 'Zapf Dingbats'; font-kerning: none}
+    span.s4 {font: 12.0px Symbol; font-kerning: none}
   </style>
 </head>
-<body class="bg-neutral-50 text-neutral-900">
-  <header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold" aria-label="Kala logo">K</div>
-      <div class="flex-1">
-        <h1 class="text-xl md:text-2xl font-semibold tracking-tight">Kala</h1>
-        <p class="text-xs md:text-sm text-neutral-500">
-          Original & premium artwork by women • curated viewing
-        </p>
-      </div>
-      <nav class="hidden md:flex gap-2" aria-label="Primary">
-        <a href="#gallery" class="px-3 py-2 rounded-2xl border">Gallery</a>
-        <a href="#visualize" class="px-3 py-2 rounded-2xl border">Visualize</a>
-        <a href="#favorites" class="px-3 py-2 rounded-2xl border">My Favorites</a>
-        <!-- artist login/link goes to artist.html (private area) -->
-        <a href="artist.html" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white">Artist Login</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="max-w-7xl mx-auto px-4 pb-16">
-    <!-- HERO -->
-    <section class="py-10 md:py-14">
-      <div class="grid md:grid-cols-2 gap-6 items-center">
-        <div>
-          <h2 class="text-3xl md:text-4xl font-semibold leading-tight">
-            Discover <span class="underline underline-offset-4 decoration-2">original, premium artwork by women</span>
-          </h2>
-          <p class="mt-3 text-neutral-600">
-            Browse curated works. Zoom in on detail. See how a piece looks in your own room — in daylight and at night.
-            Shortlist what you love. No login required.
-          </p>
-          <div class="mt-5 flex gap-2">
-            <a href="#gallery" class="px-4 py-2 rounded-2xl bg-neutral-900 text-white">Browse Gallery</a>
-            <a href="#visualize" class="px-4 py-2 rounded-2xl border">Preview on Your Wall</a>
-          </div>
-        </div>
-        <div class="aspect-[16/10] rounded-2xl overflow-hidden shadow-lg bg-white grid place-items-center">
-          <div class="p-6 text-center">
-            <div class="text-sm text-neutral-500">Zoom • Pan • Day / Night • Visualize in space</div>
-            <img id="hero-image" alt="Featured artwork" class="mt-3 max-h-64 object-cover rounded-xl" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section id="gallery" class="py-6" aria-labelledby="gallery-heading">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="relative flex-1">
-          <input id="search" placeholder="Search title, artist, tags..." class="pl-3 pr-3 py-2 w-full rounded-2xl border" />
-        </div>
-        <div>
-          <label for="artistFilter" class="sr-only">Filter by artist</label>
-          <select id="artistFilter" class="border rounded-2xl px-3 py-2 bg-white">
-            <option value="all">All artists</option>
-          </select>
-        </div>
-      </div>
-      <p id="noResults" class="text-neutral-500 hidden">No artworks match. Try clearing filters.</p>
-
-      <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-    </section>
-
-    <!-- VIEWER DIALOG -->
-    <div id="viewer" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Artwork viewer">
-      <div class="bg-white rounded-xl max-w-4xl w-full overflow-hidden">
-        <div class="flex items-center justify-between px-4 py-3 border-b">
-          <div class="flex flex-col">
-            <div id="viewerTitle" class="text-sm md:text-base font-semibold"></div>
-            <button id="favToggleViewer" class="text-xs text-neutral-500 text-left">♡ Save to favorites</button>
-          </div>
-          <div class="flex items-center gap-2">
-            <button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out">-</button>
-            <div id="zoomLabel" class="w-16 text-center text-xs" aria-live="polite">100%</div>
-            <button id="zoomIn" class="px-2 py-1 border rounded" aria-label="Zoom in">+</button>
-            <button id="resetView" class="px-2 py-1" aria-label="Reset view">Reset</button>
-            <button id="closeViewer" class="px-2 py-1" aria-label="Close viewer">✕</button>
-          </div>
-        </div>
-
-        <!-- main stage with day/night stack -->
-        <div id="viewerStage" class="relative bg-neutral-100 select-none grab" style="height:60vh">
-          <!-- base (day/main) image -->
-          <img
-            id="viewerImgDay"
-            class="absolute top-1/2 left-1/2 will-change-transform"
-            style="max-width:unset; max-height:unset; width:auto; height:100%;"
-            alt="Artwork daylight view"
-          />
-
-          <!-- night overlay image (optional) -->
-          <img
-            id="viewerImgNight"
-            class="absolute top-1/2 left-1/2 will-change-transform pointer-events-none"
-            style="max-width:unset; max-height:unset; width:auto; height:100%; opacity:0;"
-            alt="Artwork night view"
-          />
-        </div>
-
-        <!-- Lighting slider (hidden if no night version for this artwork) -->
-        <div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2">
-          <div class="flex items-center justify-between text-neutral-600">
-            <span>Daylight</span>
-            <span>Night / Warm light</span>
-          </div>
-          <input id="lightSlider" type="range" min="0" max="100" step="1" value="0" />
-        </div>
-
-        <div id="viewerMeta" class="px-4 py-2 text-xs text-neutral-500"></div>
-      </div>
-    </div>
-
-    <!-- VISUALIZER -->
-    <section id="visualize" class="py-10" aria-labelledby="visualize-heading">
-      <h3 id="visualize-heading" class="sr-only">Visualize artwork on your wall</h3>
-      <div class="border rounded-2xl">
-        <div class="px-4 py-3 border-b text-lg font-semibold">Preview in Your Space</div>
-        <div class="grid lg:grid-cols-5 gap-6 p-4">
-          <div class="lg:col-span-3">
-            <div id="roomStage" class="aspect-[16/9] bg-neutral-100 rounded-2xl overflow-hidden relative">
-              <div id="roomPlaceholder" class="h-full w-full grid place-items-center text-neutral-500 p-6 text-center">
-                <p>Upload a photo of your room or wall to preview the artwork on it.</p>
-              </div>
-              <img id="roomImg" class="w-full h-full object-cover hidden" alt="Your room preview"/>
-              <div id="overlayLayer" class="absolute inset-0"></div>
-            </div>
-            <div class="flex flex-wrap items-center gap-3 mt-3">
-              <label class="text-sm text-neutral-500">Scale</label>
-              <input id="ovScale" type="range" min="0.4" max="2" step="0.05" value="0.6" />
-              <label class="text-sm text-neutral-500">Rotate</label>
-              <input id="ovRotate" type="range" min="-30" max="30" step="1" value="0" />
-              <button id="ovReset" class="px-3 py-1 border rounded">Reset</button>
-            </div>
-          </div>
-          <div class="lg:col-span-2 space-y-4">
-            <div class="border rounded-2xl p-4 bg-neutral-50">
-              <div class="text-sm text-neutral-600 mb-2">Upload room/wall photo</div>
-              <input id="roomFile" type="file" accept="image/*" capture="environment" class="block w-full text-sm" />
-            </div>
-            <div>
-              <div class="text-sm mb-2 text-neutral-600">Choose an artwork</div>
-              <div id="picker" class="max-h-72 overflow-auto grid grid-cols-3 gap-2 pr-1 hide-scrollbar"></div>
-              <div id="selectedMeta" class="text-xs text-neutral-500 mt-2"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAVORITES -->
-    <section id="favorites" class="py-10">
-      <div class="border rounded-2xl">
-        <div class="px-4 py-3 border-b text-lg font-semibold">Your Favorites</div>
-        <div id="favoritesGrid" class="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
-        <p id="noFavs" class="p-4 text-sm text-neutral-500 hidden">You haven't saved any pieces yet. Tap ♡ on a piece to save it here.</p>
-      </div>
-    </section>
-
-    <footer class="mt-14 pt-8 border-t text-sm text-neutral-500">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-10">
-        <div>© <span id="year"></span> <span class="font-medium text-neutral-700">Kala</span>. Original & premium artwork by women.</div>
-        <div>No logins to browse • No payments • Curated only</div>
-      </div>
-    </footer>
-  </main>
-
-<script>
-/* ===== Data Layer ===== */
-const LS_KEY_ART = "curated-art-gallery:v1";
-const LS_KEY_FAV = "kala:favorites:v1";
-
-const uid = () => Math.random().toString(36).slice(2);
-
-function loadArtworks() {
-  const raw = localStorage.getItem(LS_KEY_ART);
-  if (raw) {
-    try { return JSON.parse(raw); } catch(e) { return []; }
-  }
-  const seed = [
-    {
-      id: uid(),
-      title: "Quiet Mangroves",
-      artist: "A. Sen",
-      widthCm: 80,
-      heightCm: 60,
-      tags: ["nature","landscape"],
-      curated: true,
-      imageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-      dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-      nightImageDataUrl: null,
-      createdAt: Date.now()-86400000*4
-    },
-    {
-      id: uid(),
-      title: "City in Monsoon",
-      artist: "G. Mane",
-      widthCm: 60,
-      heightCm: 90,
-      tags: ["urban","rain"],
-      curated: true,
-      imageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
-      dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
-      nightImageDataUrl: null,
-      createdAt: Date.now()-86400000*2
-    },
-  ];
-  localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));
-  return seed;
-}
-function saveArtworks(items) {
-  localStorage.setItem(LS_KEY_ART, JSON.stringify(items));
-}
-
-function loadFavorites() {
-  const raw = localStorage.getItem(LS_KEY_FAV);
-  if (!raw) return [];
-  try { return JSON.parse(raw); } catch(e) { return []; }
-}
-function saveFavorites(favs) {
-  localStorage.setItem(LS_KEY_FAV, JSON.stringify(favs));
-}
-
-let artworks = loadArtworks();
-let favorites = loadFavorites();
-
-/* ===== UI refs ===== */
-const heroImage = document.getElementById("hero-image");
-const galleryGrid = document.getElementById("galleryGrid");
-const searchInput = document.getElementById("search");
-const artistFilter = document.getElementById("artistFilter");
-const noResults = document.getElementById("noResults");
-const yearEl = document.getElementById("year");
-yearEl.textContent = new Date().getFullYear();
-
-/* Viewer refs */
-const viewerEl = document.getElementById("viewer");
-const viewerTitle = document.getElementById("viewerTitle");
-const viewerImgDay = document.getElementById("viewerImgDay");
-const viewerImgNight = document.getElementById("viewerImgNight");
-const lightSlider = document.getElementById("lightSlider");
-const lightSliderWrapper = document.getElementById("lightSliderWrapper");
-const favToggleViewer = document.getElementById("favToggleViewer");
-
-const viewerStage = document.getElementById("viewerStage");
-const zoomInBtn = document.getElementById("zoomIn");
-const zoomOutBtn = document.getElementById("zoomOut");
-const resetViewBtn = document.getElementById("resetView");
-const closeViewerBtn = document.getElementById("closeViewer");
-const zoomLabel = document.getElementById("zoomLabel");
-const viewerMeta = document.getElementById("viewerMeta");
-
-/* Visualizer refs */
-const roomFile = document.getElementById("roomFile");
-const roomImg = document.getElementById("roomImg");
-const roomPlaceholder = document.getElementById("roomPlaceholder");
-const overlayLayer = document.getElementById("overlayLayer");
-const picker = document.getElementById("picker");
-const selectedMeta = document.getElementById("selectedMeta");
-const ovScale = document.getElementById("ovScale");
-const ovRotate = document.getElementById("ovRotate");
-const ovReset = document.getElementById("ovReset");
-
-/* Favorites refs */
-const favoritesGrid = document.getElementById("favoritesGrid");
-const noFavs = document.getElementById("noFavs");
-
-/* state */
-let currentArtwork = null;
-let zoom = 1;
-let pan = {x:0,y:0};
-let dragging = false;
-let startPt = {x:0,y:0};
-let startPan = {x:0,y:0};
-
-let pickId = null;
-let ov = { scale: 0.6, rot: 0, pos: {x:50,y:55} };
-let ovDragging = false;
-
-/* ===== Helpers ===== */
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function isFav(id) {
-  return favorites.includes(id);
-}
-function toggleFav(id) {
-  if (isFav(id)) {
-    favorites = favorites.filter(x => x !== id);
-  } else {
-    favorites = [id, ...favorites];
-  }
-  saveFavorites(favorites);
-  renderGallery();   // update ♡ in cards
-  renderFavorites(); // update favorites section
-  updateFavInViewer();
-}
-
-function updateFavInViewer() {
-  if (!currentArtwork) return;
-  if (isFav(currentArtwork.id)) {
-    favToggleViewer.textContent = "♥ Saved to favorites";
-    favToggleViewer.classList.add("fav-active");
-  } else {
-    favToggleViewer.textContent = "♡ Save to favorites";
-    favToggleViewer.classList.remove("fav-active");
-  }
-}
-
-function setHero() {
-  const curated = artworks.filter(a=>a.curated!==false).sort((a,b)=>b.createdAt-a.createdAt);
-  const top = curated[0] || artworks[0];
-  if (top) {
-    heroImage.src = top.imageDataUrl || top.dayImageDataUrl;
-  }
-}
-
-/* ===== Gallery Render ===== */
-function renderArtistFilter() {
-  const unique = Array.from(new Set(artworks.map(a=>a.artist))).filter(Boolean).sort();
-  artistFilter.innerHTML = '<option value="all">All artists</option>' +
-    unique.map(a=>`<option value="${a}">${a}</option>`).join("");
-}
-
-function renderGallery() {
-  const q = (searchInput.value||"").trim().toLowerCase();
-  const af = artistFilter.value;
-
-  const curated = artworks
-    .filter(a=>a.curated!==false)
-    .sort((a,b)=>b.createdAt-a.createdAt);
-
-  const filtered = curated.filter(a => {
-    const hitsQ = !q || [a.title, a.artist, ...(a.tags||[])].join(" ").toLowerCase().includes(q);
-    const hitsArtist = af === "all" || a.artist === af;
-    return hitsQ && hitsArtist;
-  });
-
-  noResults.classList.toggle("hidden", filtered.length>0);
-
-  galleryGrid.innerHTML = filtered.map(a => {
-    const favClass = isFav(a.id) ? "fav-active" : "text-neutral-400";
-    return `
-    <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow relative">
-      <button data-open="${a.id}" class="block text-left w-full">
-        <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-          <img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover hover:scale-105 transition-transform"/>
-        </div>
-        <div class="p-3 flex items-start justify-between gap-2">
-          <div class="flex-1 min-w-0">
-            <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
-            <div class="text-xs text-neutral-500 truncate">${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm</div>
-          </div>
-          <button data-fav="${a.id}" class="text-xs ${favClass} whitespace-nowrap">♡</button>
-        </div>
-      </button>
-    </div>`;
-  }).join("");
-
-  // open handlers
-  galleryGrid.querySelectorAll("[data-open]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-open");
-      const art = artworks.find(x=>x.id===id);
-      openViewer(art);
-    });
-  });
-
-  // fav buttons
-  galleryGrid.querySelectorAll("[data-fav]").forEach(btn=>{
-    btn.addEventListener("click", (e)=>{
-      e.stopPropagation();
-      const id = btn.getAttribute("data-fav");
-      toggleFav(id);
-    });
-  });
-}
-
-/* ===== Viewer Logic ===== */
-function openViewer(art) {
-  currentArtwork = art;
-  zoom = 1;
-  pan = {x:0,y:0};
-
-  const daySrc   = art.dayImageDataUrl || art.imageDataUrl || "";
-  const nightSrc = art.nightImageDataUrl;
-
-  viewerImgDay.src = daySrc;
-  viewerImgNight.style.opacity = 0;
-
-  if (nightSrc) {
-    viewerImgNight.src = nightSrc;
-    lightSliderWrapper.classList.remove("hidden");
-    lightSlider.value = 0;
-    viewerImgNight.style.opacity = 0;
-  } else {
-    viewerImgNight.src = daySrc;
-    lightSliderWrapper.classList.add("hidden");
-    viewerImgNight.style.opacity = 0;
-  }
-
-  viewerTitle.textContent = `${art.title} — ${art.artist}`;
-  viewerMeta.textContent = `Size: ${art.widthCm||"?"}×${art.heightCm||"?"} cm • Tags: ${(art.tags||[]).join(", ")||"none"}`;
-
-  updateViewerTransform();
-  updateFavInViewer();
-  viewerEl.classList.remove("hidden");
-}
-
-function closeViewer() { viewerEl.classList.add("hidden"); }
-
-function updateViewerTransform() {
-  const t = `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
-  viewerImgDay.style.transform = t;
-  viewerImgNight.style.transform = t;
-  zoomLabel.textContent = Math.round(zoom*100) + "%";
-}
-
-// zoom / pan events
-zoomInBtn.addEventListener("click", ()=>{
-  zoom = Math.min(4, zoom+0.2);
-  updateViewerTransform();
-});
-zoomOutBtn.addEventListener("click", ()=>{
-  zoom = Math.max(0.25, zoom-0.2);
-  updateViewerTransform();
-});
-resetViewBtn.addEventListener("click", ()=>{
-  zoom=1;
-  pan={x:0,y:0};
-  updateViewerTransform();
-});
-closeViewerBtn.addEventListener("click", closeViewer);
-
-viewerStage.addEventListener("wheel", (e)=>{
-  e.preventDefault();
-  zoom = Math.min(4, Math.max(0.25, zoom + (e.deltaY>0 ? -0.1 : 0.1)));
-  updateViewerTransform();
-},{passive:false});
-
-viewerStage.addEventListener("mousedown", (e)=>{
-  dragging=true;
-  viewerStage.classList.remove("grab");
-  viewerStage.classList.add("grabbing");
-  startPt={x:e.clientX,y:e.clientY};
-  startPan={...pan};
-});
-window.addEventListener("mouseup", ()=>{
-  dragging=false;
-  viewerStage.classList.add("grab");
-  viewerStage.classList.remove("grabbing");
-});
-viewerStage.addEventListener("mousemove", (e)=>{
-  if(!dragging) return;
-  const dx=e.clientX-startPt.x;
-  const dy=e.clientY-startPt.y;
-  pan={x:startPan.x+dx, y:startPan.y+dy};
-  updateViewerTransform();
-});
-
-// lighting blend
-lightSlider.addEventListener("input", (e) => {
-  const v = parseInt(e.target.value, 10);
-  const alpha = v / 100;
-  viewerImgNight.style.opacity = alpha;
-});
-
-// favorite from inside viewer
-favToggleViewer.addEventListener("click", ()=>{
-  if (!currentArtwork) return;
-  toggleFav(currentArtwork.id);
-});
-
-/* ===== Visualizer (Preview in Your Space) ===== */
-function setRoomPlaceholder(show) {
-  roomPlaceholder.classList.toggle("hidden", !show);
-  roomImg.classList.toggle("hidden", show);
-}
-roomFile.addEventListener("change", async (e)=>{
-  const f = e.target.files && e.target.files[0];
-  if (!f) return;
-  const url = await fileToDataUrl(f);
-  roomImg.src = url;
-  setRoomPlaceholder(false);
-});
-
-function renderPicker() {
-  picker.innerHTML = artworks
-    .filter(a=>a.curated!==false)
-    .map(a => `
-      <button data-pick="${a.id}" class="relative rounded-lg overflow-hidden border ${pickId===a.id? 'ring-2 ring-neutral-900' : 'border-neutral-200'}">
-        <img src="${a.imageDataUrl || a.dayImageDataUrl}" alt="${a.title}" class="w-full h-24 object-cover"/>
-        <div class="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 truncate">${a.title}</div>
-      </button>`
-    ).join("");
-
-  picker.querySelectorAll("[data-pick]").forEach(btn => {
-    btn.addEventListener("click", ()=>{
-      pickId = btn.getAttribute("data-pick");
-      updateOverlay();
-      renderPicker();
-    });
-  });
-
-  const art = artworks.find(a=>a.id===pickId);
-  selectedMeta.textContent = art
-    ? `Selected: ${art.title} — ${art.widthCm||"?"}×${art.heightCm||"?"} cm`
-    : "";
-}
-
-function updateOverlay() {
-  overlayLayer.innerHTML = "";
-  const art = artworks.find(a=>a.id===pickId);
-  if (!art) return;
-
-  const box = document.createElement("div");
-  box.title = "Drag to reposition";
-  box.className = "absolute shadow bg-white p-2 rounded-sm";
-  box.style.left = ov.pos.x + "%";
-  box.style.top = ov.pos.y + "%";
-  box.style.transform = `translate(-50%, -50%) rotate(${ov.rot}deg)`;
-  box.style.width = Math.max(10, 40*ov.scale) + "%";
-
-  const aspect = (art.widthCm||4) / (art.heightCm||3);
-  box.style.aspectRatio = aspect;
-
-  const img = document.createElement("img");
-  img.src = art.imageDataUrl || art.dayImageDataUrl;
-  img.className = "w-full h-full object-cover";
-  box.appendChild(img);
-
-  overlayLayer.appendChild(box);
-
-  box.addEventListener("mousedown", ()=>{ ovDragging = true; });
-  window.addEventListener("mouseup", ()=>{ ovDragging = false; });
-  overlayLayer.addEventListener("mousemove", (e)=>{
-    if (!ovDragging) return;
-    const rect = overlayLayer.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    ov.pos = {
-      x: Math.max(0, Math.min(100, x)),
-      y: Math.max(0, Math.min(100, y))
-    };
-    box.style.left = ov.pos.x + "%";
-    box.style.top = ov.pos.y + "%";
-  }, { once: true });
-}
-
-ovScale.addEventListener("input", (e)=>{
-  ov.scale = parseFloat(e.target.value);
-  updateOverlay();
-});
-ovRotate.addEventListener("input", (e)=>{
-  ov.rot = parseFloat(e.target.value);
-  updateOverlay();
-});
-ovReset.addEventListener("click", ()=>{
-  ov = { scale:0.6, rot:0, pos:{x:50,y:55} };
-  updateOverlay();
-});
-
-/* ===== Favorites section render ===== */
-function renderFavorites() {
-  if (!favorites.length) {
-    favoritesGrid.innerHTML = "";
-    noFavs.classList.remove("hidden");
-    return;
-  }
-  noFavs.classList.add("hidden");
-
-  const favArtworks = favorites
-    .map(id => artworks.find(a => a.id === id))
-    .filter(Boolean);
-
-  favoritesGrid.innerHTML = favArtworks.map(a => `
-    <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow">
-      <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-        <img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover"/>
-      </div>
-      <div class="p-3 flex items-start justify-between gap-2">
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
-          <div class="text-xs text-neutral-500 truncate">${a.artist}</div>
-        </div>
-        <button data-fav-remove="${a.id}" class="text-xs text-neutral-400 whitespace-nowrap">✕</button>
-      </div>
-    </div>
-  `).join("");
-
-  favoritesGrid.querySelectorAll("[data-fav-remove]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-fav-remove");
-      favorites = favorites.filter(x => x !== id);
-      saveFavorites(favorites);
-      renderGallery();
-      renderFavorites();
-      updateFavInViewer();
-    });
-  });
-}
-
-/* ===== Search handlers ===== */
-searchInput.addEventListener("input", renderGallery);
-artistFilter.addEventListener("change", renderGallery);
-
-/* ===== Initial render ===== */
-function renderAll() {
-  setHero();
-  renderArtistFilter();
-  renderGallery();
-  renderFavorites();
-
-  if (!pickId && artworks.length) {
-    pickId = artworks.find(a=>a.curated!==false)?.id || artworks[0].id;
-  }
-  renderPicker();
-  updateOverlay();
-}
-renderAll();
-</script>
+<body>
+<p class="p1"><span class="s1">&lt;!doctype html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Kala — Original &amp; Premium Artwork by Women&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="description" content="Kala is a curated showcase of original and premium artwork by women. Browse, preview on your wall, and save your favorites."&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;link rel="icon" href="data:,"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.grab { cursor: grab; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.grabbing { cursor: grabbing; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.hide-scrollbar::-webkit-scrollbar { display: none; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.fav-active { color: rgb(219 39 119); } /* pink-600 */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body class="bg-neutral-50 text-neutral-900"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold" aria-label="Kala logo"&gt;K&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="flex-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h1 class="text-xl md:text-2xl font-semibold tracking-tight"&gt;Kala&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p class="text-xs md:text-sm text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>Original &amp; premium artwork by women • curated viewing</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;nav class="hidden md:flex gap-2" aria-label="Primary"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href="#gallery" class="px-3 py-2 rounded-2xl border"&gt;Gallery&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href="#visualize" class="px-3 py-2 rounded-2xl border"&gt;Visualize&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href="#favorites" class="px-3 py-2 rounded-2xl border"&gt;My Favorites&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- artist login/link goes to artist.html (private area) --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href=“artist.html" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white"&gt;Artist Login&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/nav&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/header&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;main class="max-w-7xl mx-auto px-4 pb-16"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- HERO --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section class="py-10 md:py-14"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="grid md:grid-cols-2 gap-6 items-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;h2 class="text-3xl md:text-4xl font-semibold leading-tight"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Discover &lt;span class="underline underline-offset-4 decoration-2"&gt;original, premium artwork by women&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;p class="mt-3 text-neutral-600"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Browse curated works. Zoom in on detail. See how a piece looks in your own room — in daylight and at night.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Shortlist what you love. No login required.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="mt-5 flex gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;a href="#gallery" class="px-4 py-2 rounded-2xl bg-neutral-900 text-white"&gt;Browse Gallery&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;a href="#visualize" class="px-4 py-2 rounded-2xl border"&gt;Preview on Your Wall&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="aspect-[16/10] rounded-2xl overflow-hidden shadow-lg bg-white grid place-items-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="p-6 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-sm text-neutral-500"&gt;Zoom • Pan • Day / Night • Visualize in space&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;img id="hero-image" alt="Featured artwork" class="mt-3 max-h-64 object-cover rounded-xl" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- GALLERY --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section id="gallery" class="py-6" aria-labelledby="gallery-heading"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-3 mb-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="relative flex-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input id="search" placeholder="Search title, artist, tags..." class="pl-3 pr-3 py-2 w-full rounded-2xl border" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label for="artistFilter" class="sr-only"&gt;Filter by artist&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;select id="artistFilter" class="border rounded-2xl px-3 py-2 bg-white"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;option value="all"&gt;All artists&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/select&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p id="noResults" class="text-neutral-500 hidden"&gt;No artworks match. Try clearing filters.&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- VIEWER DIALOG --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="viewer" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Artwork viewer"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="bg-white rounded-xl max-w-4xl w-full overflow-hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between px-4 py-3 border-b"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="flex flex-col"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div id="viewerTitle" class="text-sm md:text-base font-semibold"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button id="favToggleViewer" class="text-xs text-neutral-500 text-left"&gt;</span><span class="s2">♡</span><span class="s1"> Save to favorites&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out"&gt;-&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div id="zoomLabel" class="w-16 text-center text-xs" aria-live="polite"&gt;100%&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button id="zoomIn" class="px-2 py-1 border rounded" aria-label="Zoom in"&gt;+&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button id="resetView" class="px-2 py-1" aria-label="Reset view"&gt;Reset&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button id="closeViewer" class="px-2 py-1" aria-label="Close viewer"&gt;</span><span class="s3">✕</span><span class="s1">&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- main stage with day/night stack --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="viewerStage" class="relative bg-neutral-100 select-none grab" style="height:60vh"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;!-- base (day/main) image --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;img</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>id="viewerImgDay"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>class="absolute top-1/2 left-1/2 will-change-transform"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>style="max-width:unset; max-height:unset; width:auto; height:100%;"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>alt="Artwork daylight view"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>/&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;!-- night overlay image (optional) --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;img</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>id="viewerImgNight"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>class="absolute top-1/2 left-1/2 will-change-transform pointer-events-none"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>style="max-width:unset; max-height:unset; width:auto; height:100%; opacity:0;"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>alt="Artwork night view"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Lighting slider (hidden if no night version for this artwork) --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="flex items-center justify-between text-neutral-600"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span&gt;Daylight&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span&gt;Night / Warm light&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input id="lightSlider" type="range" min="0" max="100" step="1" value="0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="viewerMeta" class="px-4 py-2 text-xs text-neutral-500"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- VISUALIZER --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section id="visualize" class="py-10" aria-labelledby="visualize-heading"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h3 id="visualize-heading" class="sr-only"&gt;Visualize artwork on your wall&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-2xl"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="px-4 py-3 border-b text-lg font-semibold"&gt;Preview in Your Space&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="grid lg:grid-cols-5 gap-6 p-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="lg:col-span-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div id="roomStage" class="aspect-[16/9] bg-neutral-100 rounded-2xl overflow-hidden relative"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div id="roomPlaceholder" class="h-full w-full grid place-items-center text-neutral-500 p-6 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p&gt;Upload a photo of your room or wall to preview the artwork on it.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;img id="roomImg" class="w-full h-full object-cover hidden" alt="Your room preview"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div id="overlayLayer" class="absolute inset-0"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="flex flex-wrap items-center gap-3 mt-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label class="text-sm text-neutral-500"&gt;Scale&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="ovScale" type="range" min="0.4" max="2" step="0.05" value="0.6" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label class="text-sm text-neutral-500"&gt;Rotate&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="ovRotate" type="range" min="-30" max="30" step="1" value="0" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;button id="ovReset" class="px-3 py-1 border rounded"&gt;Reset&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="lg:col-span-2 space-y-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="border rounded-2xl p-4 bg-neutral-50"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div class="text-sm text-neutral-600 mb-2"&gt;Upload room/wall photo&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="roomFile" type="file" accept="image/*" capture="environment" class="block w-full text-sm" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div class="text-sm mb-2 text-neutral-600"&gt;Choose an artwork&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div id="picker" class="max-h-72 overflow-auto grid grid-cols-3 gap-2 pr-1 hide-scrollbar"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div id="selectedMeta" class="text-xs text-neutral-500 mt-2"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- FAVORITES --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section id="favorites" class="py-10"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-2xl"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="px-4 py-3 border-b text-lg font-semibold"&gt;Your Favorites&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="favoritesGrid" class="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p id="noFavs" class="p-4 text-sm text-neutral-500 hidden"&gt;You haven't saved any pieces yet. Tap </span><span class="s2">♡</span><span class="s1"> on a piece to save it here.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;footer class="mt-14 pt-8 border-t text-sm text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-10"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;© &lt;span id="year"&gt;&lt;/span&gt; &lt;span class="font-medium text-neutral-700"&gt;Kala&lt;/span&gt;. Original &amp; premium artwork by women.&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;No logins to browse • No payments • Curated only&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/footer&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/main&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p1"><span class="s1">/* ===== Data Layer ===== */</span></p>
+<p class="p1"><span class="s1">const LS_KEY_ART = "curated-art-gallery:v1";</span></p>
+<p class="p1"><span class="s1">const LS_KEY_FAV = "kala:favorites:v1";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const uid = () =&gt; Math.random().toString(36).slice(2);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function loadArtworks() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const raw = localStorage.getItem(LS_KEY_ART);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (raw) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try { return JSON.parse(raw); } catch(e) { return []; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const seed = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>id: uid(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>title: "Quiet Mangroves",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artist: "A. Sen",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>widthCm: 80,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>heightCm: 60,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>tags: ["nature","landscape"],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>curated: true,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>imageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>nightImageDataUrl: null,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>createdAt: Date.now()-86400000*4</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>id: uid(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>title: "City in Monsoon",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artist: "G. Mane",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>widthCm: 60,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>heightCm: 90,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>tags: ["urban","rain"],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>curated: true,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>imageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>nightImageDataUrl: null,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>createdAt: Date.now()-86400000*2</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return seed;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">function saveArtworks(items) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.setItem(LS_KEY_ART, JSON.stringify(items));</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function loadFavorites() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const raw = localStorage.getItem(LS_KEY_FAV);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!raw) return [];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>try { return JSON.parse(raw); } catch(e) { return []; }</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">function saveFavorites(favs) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.setItem(LS_KEY_FAV, JSON.stringify(favs));</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">let artworks = loadArtworks();</span></p>
+<p class="p1"><span class="s1">let favorites = loadFavorites();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== UI refs ===== */</span></p>
+<p class="p1"><span class="s1">const heroImage = document.getElementById("hero-image");</span></p>
+<p class="p1"><span class="s1">const galleryGrid = document.getElementById("galleryGrid");</span></p>
+<p class="p1"><span class="s1">const searchInput = document.getElementById("search");</span></p>
+<p class="p1"><span class="s1">const artistFilter = document.getElementById("artistFilter");</span></p>
+<p class="p1"><span class="s1">const noResults = document.getElementById("noResults");</span></p>
+<p class="p1"><span class="s1">const yearEl = document.getElementById("year");</span></p>
+<p class="p1"><span class="s1">yearEl.textContent = new Date().getFullYear();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* Viewer refs */</span></p>
+<p class="p1"><span class="s1">const viewerEl = document.getElementById("viewer");</span></p>
+<p class="p1"><span class="s1">const viewerTitle = document.getElementById("viewerTitle");</span></p>
+<p class="p1"><span class="s1">const viewerImgDay = document.getElementById("viewerImgDay");</span></p>
+<p class="p1"><span class="s1">const viewerImgNight = document.getElementById("viewerImgNight");</span></p>
+<p class="p1"><span class="s1">const lightSlider = document.getElementById("lightSlider");</span></p>
+<p class="p1"><span class="s1">const lightSliderWrapper = document.getElementById("lightSliderWrapper");</span></p>
+<p class="p1"><span class="s1">const favToggleViewer = document.getElementById("favToggleViewer");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const viewerStage = document.getElementById("viewerStage");</span></p>
+<p class="p1"><span class="s1">const zoomInBtn = document.getElementById("zoomIn");</span></p>
+<p class="p1"><span class="s1">const zoomOutBtn = document.getElementById("zoomOut");</span></p>
+<p class="p1"><span class="s1">const resetViewBtn = document.getElementById("resetView");</span></p>
+<p class="p1"><span class="s1">const closeViewerBtn = document.getElementById("closeViewer");</span></p>
+<p class="p1"><span class="s1">const zoomLabel = document.getElementById("zoomLabel");</span></p>
+<p class="p1"><span class="s1">const viewerMeta = document.getElementById("viewerMeta");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* Visualizer refs */</span></p>
+<p class="p1"><span class="s1">const roomFile = document.getElementById("roomFile");</span></p>
+<p class="p1"><span class="s1">const roomImg = document.getElementById("roomImg");</span></p>
+<p class="p1"><span class="s1">const roomPlaceholder = document.getElementById("roomPlaceholder");</span></p>
+<p class="p1"><span class="s1">const overlayLayer = document.getElementById("overlayLayer");</span></p>
+<p class="p1"><span class="s1">const picker = document.getElementById("picker");</span></p>
+<p class="p1"><span class="s1">const selectedMeta = document.getElementById("selectedMeta");</span></p>
+<p class="p1"><span class="s1">const ovScale = document.getElementById("ovScale");</span></p>
+<p class="p1"><span class="s1">const ovRotate = document.getElementById("ovRotate");</span></p>
+<p class="p1"><span class="s1">const ovReset = document.getElementById("ovReset");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* Favorites refs */</span></p>
+<p class="p1"><span class="s1">const favoritesGrid = document.getElementById("favoritesGrid");</span></p>
+<p class="p1"><span class="s1">const noFavs = document.getElementById("noFavs");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* state */</span></p>
+<p class="p1"><span class="s1">let currentArtwork = null;</span></p>
+<p class="p1"><span class="s1">let zoom = 1;</span></p>
+<p class="p1"><span class="s1">let pan = {x:0,y:0};</span></p>
+<p class="p1"><span class="s1">let dragging = false;</span></p>
+<p class="p1"><span class="s1">let startPt = {x:0,y:0};</span></p>
+<p class="p1"><span class="s1">let startPan = {x:0,y:0};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">let pickId = null;</span></p>
+<p class="p1"><span class="s1">let ov = { scale: 0.6, rot: 0, pos: {x:50,y:55} };</span></p>
+<p class="p1"><span class="s1">let ovDragging = false;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Helpers ===== */</span></p>
+<p class="p1"><span class="s1">function fileToDataUrl(file) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return new Promise((resolve, reject) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const reader = new FileReader();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.onload = () =&gt; resolve(reader.result);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.onerror = reject;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.readAsDataURL(file);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function isFav(id) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return favorites.includes(id);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">function toggleFav(id) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (isFav(id)) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favorites = favorites.filter(x =&gt; x !== id);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favorites = [id, ...favorites];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>saveFavorites(favorites);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderGallery(); <span class="Apple-converted-space">  </span>// update </span><span class="s2">♡</span><span class="s1"> in cards</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderFavorites(); // update favorites section</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateFavInViewer();</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function updateFavInViewer() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!currentArtwork) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (isFav(currentArtwork.id)) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favToggleViewer.textContent = "</span><span class="s4">♥</span><span class="s1"> Saved to favorites";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favToggleViewer.classList.add("fav-active");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favToggleViewer.textContent = "</span><span class="s2">♡</span><span class="s1"> Save to favorites";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favToggleViewer.classList.remove("fav-active");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function setHero() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const curated = artworks.filter(a=&gt;a.curated!==false).sort((a,b)=&gt;b.createdAt-a.createdAt);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const top = curated[0] || artworks[0];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (top) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>heroImage.src = top.imageDataUrl || top.dayImageDataUrl;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Gallery Render ===== */</span></p>
+<p class="p1"><span class="s1">function renderArtistFilter() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const unique = Array.from(new Set(artworks.map(a=&gt;a.artist))).filter(Boolean).sort();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>artistFilter.innerHTML = '&lt;option value="all"&gt;All artists&lt;/option&gt;' +</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>unique.map(a=&gt;`&lt;option value="${a}"&gt;${a}&lt;/option&gt;`).join("");</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function renderGallery() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const q = (searchInput.value||"").trim().toLowerCase();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const af = artistFilter.value;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const curated = artworks</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.filter(a=&gt;a.curated!==false)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.sort((a,b)=&gt;b.createdAt-a.createdAt);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const filtered = curated.filter(a =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const hitsQ = !q || [a.title, a.artist, ...(a.tags||[])].join(" ").toLowerCase().includes(q);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const hitsArtist = af === "all" || a.artist === af;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return hitsQ &amp;&amp; hitsArtist;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>noResults.classList.toggle("hidden", filtered.length&gt;0);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>galleryGrid.innerHTML = filtered.map(a =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const favClass = isFav(a.id) ? "fav-active" : "text-neutral-400";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow relative"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button data-open="${a.id}" class="block text-left w-full"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="aspect-[3/4] bg-neutral-100 overflow-hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover hover:scale-105 transition-transform"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="p-3 flex items-start justify-between gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="flex-1 min-w-0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-sm font-medium leading-tight truncate"&gt;${a.title}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-xs text-neutral-500 truncate"&gt;${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button data-fav="${a.id}" class="text-xs ${favClass} whitespace-nowrap"&gt;</span><span class="s2">♡</span><span class="s1">&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}).join("");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// open handlers</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>galleryGrid.querySelectorAll("[data-open]").forEach(btn=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const id = btn.getAttribute("data-open");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const art = artworks.find(x=&gt;x.id===id);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>openViewer(art);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// fav buttons</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>galleryGrid.querySelectorAll("[data-fav]").forEach(btn=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>e.stopPropagation();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const id = btn.getAttribute("data-fav");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>toggleFav(id);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Viewer Logic ===== */</span></p>
+<p class="p1"><span class="s1">function openViewer(art) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>currentArtwork = art;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoom = 1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>pan = {x:0,y:0};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const daySrc <span class="Apple-converted-space">  </span>= art.dayImageDataUrl || art.imageDataUrl || "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const nightSrc = art.nightImageDataUrl;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerImgDay.src = daySrc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerImgNight.style.opacity = 0;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (nightSrc) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewerImgNight.src = nightSrc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>lightSliderWrapper.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>lightSlider.value = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewerImgNight.style.opacity = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewerImgNight.src = daySrc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>lightSliderWrapper.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>viewerImgNight.style.opacity = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerTitle.textContent = `${art.title} — ${art.artist}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerMeta.textContent = `Size: ${art.widthCm||"?"}×${art.heightCm||"?"} cm • Tags: ${(art.tags||[]).join(", ")||"none"}`;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateFavInViewer();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerEl.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function closeViewer() { viewerEl.classList.add("hidden"); }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function updateViewerTransform() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const t = `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerImgDay.style.transform = t;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerImgNight.style.transform = t;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoomLabel.textContent = Math.round(zoom*100) + "%";</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// zoom / pan events</span></p>
+<p class="p1"><span class="s1">zoomInBtn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoom = Math.min(4, zoom+0.2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">zoomOutBtn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoom = Math.max(0.25, zoom-0.2);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">resetViewBtn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoom=1;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>pan={x:0,y:0};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">closeViewerBtn.addEventListener("click", closeViewer);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">viewerStage.addEventListener("wheel", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>e.preventDefault();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>zoom = Math.min(4, Math.max(0.25, zoom + (e.deltaY&gt;0 ? -0.1 : 0.1)));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1">},{passive:false});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">viewerStage.addEventListener("mousedown", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>dragging=true;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerStage.classList.remove("grab");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerStage.classList.add("grabbing");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>startPt={x:e.clientX,y:e.clientY};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>startPan={...pan};</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">window.addEventListener("mouseup", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>dragging=false;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerStage.classList.add("grab");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerStage.classList.remove("grabbing");</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">viewerStage.addEventListener("mousemove", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if(!dragging) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const dx=e.clientX-startPt.x;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const dy=e.clientY-startPt.y;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>pan={x:startPan.x+dx, y:startPan.y+dy};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateViewerTransform();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// lighting blend</span></p>
+<p class="p1"><span class="s1">lightSlider.addEventListener("input", (e) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const v = parseInt(e.target.value, 10);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const alpha = v / 100;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>viewerImgNight.style.opacity = alpha;</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// favorite from inside viewer</span></p>
+<p class="p1"><span class="s1">favToggleViewer.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!currentArtwork) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>toggleFav(currentArtwork.id);</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Visualizer (Preview in Your Space) ===== */</span></p>
+<p class="p1"><span class="s1">function setRoomPlaceholder(show) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>roomPlaceholder.classList.toggle("hidden", !show);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>roomImg.classList.toggle("hidden", show);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">roomFile.addEventListener("change", async (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const f = e.target.files &amp;&amp; e.target.files[0];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!f) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const url = await fileToDataUrl(f);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>roomImg.src = url;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>setRoomPlaceholder(false);</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function renderPicker() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>picker.innerHTML = artworks</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.filter(a=&gt;a.curated!==false)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.map(a =&gt; `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button data-pick="${a.id}" class="relative rounded-lg overflow-hidden border ${pickId===a.id? 'ring-2 ring-neutral-900' : 'border-neutral-200'}"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;img src="${a.imageDataUrl || a.dayImageDataUrl}" alt="${a.title}" class="w-full h-24 object-cover"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 truncate"&gt;${a.title}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/button&gt;`</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>).join("");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>picker.querySelectorAll("[data-pick]").forEach(btn =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>pickId = btn.getAttribute("data-pick");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>updateOverlay();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderPicker();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const art = artworks.find(a=&gt;a.id===pickId);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>selectedMeta.textContent = art</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>? `Selected: ${art.title} — ${art.widthCm||"?"}×${art.heightCm||"?"} cm`</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>: "";</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function updateOverlay() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>overlayLayer.innerHTML = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const art = artworks.find(a=&gt;a.id===pickId);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!art) return;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const box = document.createElement("div");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.title = "Drag to reposition";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.className = "absolute shadow bg-white p-2 rounded-sm";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.style.left = ov.pos.x + "%";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.style.top = ov.pos.y + "%";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.style.transform = `translate(-50%, -50%) rotate(${ov.rot}deg)`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.style.width = Math.max(10, 40*ov.scale) + "%";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const aspect = (art.widthCm||4) / (art.heightCm||3);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.style.aspectRatio = aspect;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const img = document.createElement("img");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>img.src = art.imageDataUrl || art.dayImageDataUrl;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>img.className = "w-full h-full object-cover";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.appendChild(img);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>overlayLayer.appendChild(box);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>box.addEventListener("mousedown", ()=&gt;{ ovDragging = true; });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>window.addEventListener("mouseup", ()=&gt;{ ovDragging = false; });</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>overlayLayer.addEventListener("mousemove", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if (!ovDragging) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const rect = overlayLayer.getBoundingClientRect();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const x = ((e.clientX - rect.left) / rect.width) * 100;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const y = ((e.clientY - rect.top) / rect.height) * 100;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>ov.pos = {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>x: Math.max(0, Math.min(100, x)),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>y: Math.max(0, Math.min(100, y))</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>box.style.left = ov.pos.x + "%";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>box.style.top = ov.pos.y + "%";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}, { once: true });</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">ovScale.addEventListener("input", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>ov.scale = parseFloat(e.target.value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateOverlay();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">ovRotate.addEventListener("input", (e)=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>ov.rot = parseFloat(e.target.value);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateOverlay();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p1"><span class="s1">ovReset.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>ov = { scale:0.6, rot:0, pos:{x:50,y:55} };</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateOverlay();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Favorites section render ===== */</span></p>
+<p class="p1"><span class="s1">function renderFavorites() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!favorites.length) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>favoritesGrid.innerHTML = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>noFavs.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>noFavs.classList.add("hidden");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const favArtworks = favorites</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.map(id =&gt; artworks.find(a =&gt; a.id === id))</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.filter(Boolean);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>favoritesGrid.innerHTML = favArtworks.map(a =&gt; `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="aspect-[3/4] bg-neutral-100 overflow-hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="p-3 flex items-start justify-between gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="flex-1 min-w-0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-sm font-medium leading-tight truncate"&gt;${a.title}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-xs text-neutral-500 truncate"&gt;${a.artist}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button data-fav-remove="${a.id}" class="text-xs text-neutral-400 whitespace-nowrap"&gt;</span><span class="s3">✕</span><span class="s1">&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>`).join("");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>favoritesGrid.querySelectorAll("[data-fav-remove]").forEach(btn=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", ()=&gt;{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const id = btn.getAttribute("data-fav-remove");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>favorites = favorites.filter(x =&gt; x !== id);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>saveFavorites(favorites);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderGallery();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderFavorites();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>updateFavInViewer();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Search handlers ===== */</span></p>
+<p class="p1"><span class="s1">searchInput.addEventListener("input", renderGallery);</span></p>
+<p class="p1"><span class="s1">artistFilter.addEventListener("change", renderGallery);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* ===== Initial render ===== */</span></p>
+<p class="p1"><span class="s1">function renderAll() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>setHero();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderArtistFilter();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderGallery();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderFavorites();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!pickId &amp;&amp; artworks.length) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>pickId = artworks.find(a=&gt;a.curated!==false)?.id || artworks[0].id;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderPicker();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>updateOverlay();</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">renderAll();</span></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
 </body>
 </html>

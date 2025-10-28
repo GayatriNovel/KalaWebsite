@@ -1,481 +1,498 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kala Artist Portal</title>
-  <meta name="description" content="Artist dashboard for Kala. Upload artwork and submit for curation.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="data:,"/>
-  <style>
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 12.0px 'Lucida Grande'; font-kerning: none}
   </style>
 </head>
-<body class="bg-neutral-50 text-neutral-900">
-  <header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold">K</div>
-        <div>
-          <div class="text-xl font-semibold tracking-tight leading-none">Kala</div>
-          <div class="text-[11px] text-neutral-500 leading-none">
-            Artist Portal · private
-          </div>
-        </div>
-      </div>
-
-      <button id="logoutBtn" class="text-xs px-3 py-1.5 rounded-xl border hidden">
-        Log out
-      </button>
-    </div>
-  </header>
-
-  <main class="max-w-5xl mx-auto px-4 py-10 pb-24">
-    <!-- LOGIN SCREEN -->
-    <section id="loginScreen" class="max-w-sm mx-auto border rounded-2xl bg-white shadow-sm p-6">
-      <h1 class="text-lg font-semibold">Artist Login</h1>
-      <p class="text-sm text-neutral-500 mt-1">
-        This area is for contributing artists and Kala curators only.
-      </p>
-
-      <form id="loginForm" class="mt-5 space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-neutral-700 mb-1">Username</label>
-          <input id="loginUser" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="your.name" />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-neutral-700 mb-1">Password</label>
-          <input id="loginPass" type="password" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="••••••••" />
-        </div>
-        <button class="w-full rounded-xl bg-neutral-900 text-white py-2 text-sm" type="submit">
-          Sign in
-        </button>
-        <p id="loginError" class="text-[12px] text-red-600 hidden">
-          Incorrect username or password.
-        </p>
-      </form>
-
-      <p class="text-[11px] text-neutral-400 text-center mt-6 leading-snug">
-        Your uploads are not public immediately. A curator must approve
-        them before they appear on Kala.
-      </p>
-    </section>
-
-    <!-- DASHBOARD SCREEN -->
-    <section id="dashScreen" class="hidden space-y-10">
-
-      <!-- Upload Artwork Card -->
-      <div class="border rounded-2xl bg-white shadow-sm">
-        <div class="px-4 py-3 border-b flex items-center justify-between">
-          <div>
-            <div class="text-lg font-semibold">Upload Artwork</div>
-            <div class="text-xs text-neutral-500">
-              Daylight photo is required. Night / warm-light photo is optional.
-            </div>
-          </div>
-          <div class="text-[11px] text-neutral-400">
-            Saved locally · no server
-          </div>
-        </div>
-
-        <form id="uploadForm" class="p-4 grid md:grid-cols-2 gap-4">
-          <!-- Images column -->
-          <div class="space-y-5 rounded-2xl bg-neutral-50 p-4 border">
-            <div>
-              <div class="text-sm text-neutral-700 font-medium mb-1">Day / normal light *</div>
-              <input id="artFileDay" type="file" accept="image/*" capture="environment" class="block w-full text-sm" required />
-              <p class="text-[11px] text-neutral-500 mt-1">
-                Clear, front-on photo of the work in natural/neutral lighting.
-              </p>
-            </div>
-
-            <div>
-              <div class="text-sm text-neutral-700 font-medium mb-1">Night / warm light (optional)</div>
-              <input id="artFileNight" type="file" accept="image/*" capture="environment" class="block w-full text-sm" />
-              <p class="text-[11px] text-neutral-500 mt-1">
-                Upload only if the artwork looks visibly different in evening lighting.
-              </p>
-            </div>
-          </div>
-
-          <!-- Metadata column -->
-          <div class="grid gap-3">
-            <div>
-              <label class="block text-xs font-medium text-neutral-700 mb-1">Title *</label>
-              <input id="titleInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Ex: Midnight Rain" required />
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-neutral-700 mb-1">Artist name *</label>
-              <input id="artistInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Your name / studio" required />
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-medium text-neutral-700 mb-1">Width (cm)</label>
-                <input id="widthInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="60" />
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-neutral-700 mb-1">Height (cm)</label>
-                <input id="heightInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="90" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-neutral-700 mb-1">Tags (comma separated)</label>
-              <input id="tagsInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="abstract, warm, texture" />
-            </div>
-
-            <button class="px-4 py-2 rounded-xl bg-neutral-900 text-white text-sm w-full md:w-auto" type="submit">
-              Submit for review
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Pending / Curator Desk -->
-      <div class="border rounded-2xl bg-white shadow-sm">
-        <div class="px-4 py-3 border-b flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-          <div>
-            <div class="text-lg font-semibold">Pending Review</div>
-            <div class="text-xs text-neutral-500">
-              These pieces are waiting for curator approval. They are not yet visible in the public Kala gallery.
-            </div>
-          </div>
-          <div class="text-[11px] text-neutral-400">
-            Curator can approve or remove below.
-          </div>
-        </div>
-
-        <div id="curatorList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <p id="noPending" class="p-4 text-sm text-neutral-500 hidden">
-          Nothing pending — all caught up.
-        </p>
-      </div>
-
-      <!-- Approved / Live -->
-      <div class="border rounded-2xl bg-white shadow-sm">
-        <div class="px-4 py-3 border-b flex items-center justify-between">
-          <div>
-            <div class="text-lg font-semibold">Approved / Live</div>
-            <div class="text-xs text-neutral-500">
-              These artworks are curated and can be seen by buyers on kala (homepage).
-            </div>
-          </div>
-          <a href="index.html" class="text-xs underline text-neutral-600 hover:text-neutral-800">
-            View public site →
-          </a>
-        </div>
-
-        <div id="approvedList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <p id="noApproved" class="p-4 text-sm text-neutral-500 hidden">
-          No approved works yet.
-        </p>
-      </div>
-
-    </section>
-  </main>
-
-  <footer class="border-t text-xs text-neutral-500">
-    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-      <div>© <span id="year"></span> Kala · Private artist portal</div>
-      <div>Curated only · No public checkout</div>
-    </div>
-  </footer>
-
-<script>
-/* -------------------------
-   Basic "auth"
-   ------------------------- */
-
-/*
-  This is intentionally simple client-side gating.
-  You can change these credentials to anything you like.
-*/
-const VALID_USER = "artist";
-const VALID_PASS = "kala2025";
-
-const loginScreen = document.getElementById("loginScreen");
-const dashScreen = document.getElementById("dashScreen");
-const loginForm = document.getElementById("loginForm");
-const loginUser = document.getElementById("loginUser");
-const loginPass = document.getElementById("loginPass");
-const loginError = document.getElementById("loginError");
-const logoutBtn = document.getElementById("logoutBtn");
-
-const YEAR_EL = document.getElementById("year");
-
-const AUTH_KEY = "kala:artistAuth:v1"; // localStorage flag
-
-function isAuthed() {
-  return localStorage.getItem(AUTH_KEY) === "true";
-}
-
-function showLogin() {
-  loginScreen.classList.remove("hidden");
-  dashScreen.classList.add("hidden");
-  logoutBtn.classList.add("hidden");
-}
-
-function showDash() {
-  loginScreen.classList.add("hidden");
-  dashScreen.classList.remove("hidden");
-  logoutBtn.classList.remove("hidden");
-}
-
-loginForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const u = loginUser.value.trim();
-  const p = loginPass.value.trim();
-  if (u === VALID_USER && p === VALID_PASS) {
-    localStorage.setItem(AUTH_KEY, "true");
-    loginError.classList.add("hidden");
-    showDash();
-    renderAll(); // make sure UI reflects latest
-  } else {
-    loginError.classList.remove("hidden");
-  }
-});
-
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem(AUTH_KEY);
-  showLogin();
-});
-
-/* init login state */
-if (isAuthed()) {
-  showDash();
-} else {
-  showLogin();
-}
-
-/* -------------------------
-   Shared data model
-   ------------------------- */
-
-const LS_KEY_ART = "curated-art-gallery:v1"; // same as index.html
-// We keep all artworks (pending + approved) in one array, each item:
-// { id, title, artist, widthCm, heightCm, tags[], curated(bool),
-//   dayImageDataUrl, nightImageDataUrl, createdAt }
-
-const uid = () => Math.random().toString(36).slice(2);
-
-function loadArtworks() {
-  const raw = localStorage.getItem(LS_KEY_ART);
-  if (raw) {
-    try { return JSON.parse(raw); } catch(e) { return []; }
-  }
-  // seed with 2 demo items if first ever load
-  const seed = [
-    {
-      id: uid(),
-      title: "Quiet Mangroves",
-      artist: "A. Sen",
-      widthCm: 80,
-      heightCm: 60,
-      tags: ["nature","landscape"],
-      curated: true,
-      dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-      nightImageDataUrl: null,
-      createdAt: Date.now()-86400000*4
-    },
-    {
-      id: uid(),
-      title: "City in Monsoon",
-      artist: "G. Mane",
-      widthCm: 60,
-      heightCm: 90,
-      tags: ["urban","rain"],
-      curated: true,
-      dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
-      nightImageDataUrl: null,
-      createdAt: Date.now()-86400000*2
-    },
-  ];
-  localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));
-  return seed;
-}
-
-function saveArtworks(items) {
-  localStorage.setItem(LS_KEY_ART, JSON.stringify(items));
-}
-
-let artworks = loadArtworks();
-
-/* -------------------------
-   Elements for dashboard
-   ------------------------- */
-
-const uploadFormEl = document.getElementById("uploadForm");
-const artFileDayEl = document.getElementById("artFileDay");
-const artFileNightEl = document.getElementById("artFileNight");
-
-const titleInputEl = document.getElementById("titleInput");
-const artistInputEl = document.getElementById("artistInput");
-const widthInputEl = document.getElementById("widthInput");
-const heightInputEl = document.getElementById("heightInput");
-const tagsInputEl = document.getElementById("tagsInput");
-
-const curatorListEl = document.getElementById("curatorList");
-const noPendingEl = document.getElementById("noPending");
-
-const approvedListEl = document.getElementById("approvedList");
-const noApprovedEl = document.getElementById("noApproved");
-
-/* Utility: convert file to base64 data URL */
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = ()=> resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/* -------------------------
-   Upload handler
-   ------------------------- */
-uploadFormEl.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!isAuthed()) return; // block if logged out mid-session
-
-  const dayFile = artFileDayEl.files && artFileDayEl.files[0];
-  if (!dayFile) return; // required
-
-  const [dayUrl, nightUrl] = await Promise.all([
-    fileToDataUrl(dayFile),
-    (async () => {
-      const nf = artFileNightEl.files && artFileNightEl.files[0];
-      if (!nf) return null;
-      return fileToDataUrl(nf);
-    })()
-  ]);
-
-  const newItem = {
-    id: uid(),
-    title: (titleInputEl.value || "Untitled").trim(),
-    artist: (artistInputEl.value || "Unknown").trim(),
-    widthCm: parseFloat(widthInputEl.value) || undefined,
-    heightCm: parseFloat(heightInputEl.value) || undefined,
-    tags: (tagsInputEl.value || "")
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean),
-    curated: false, // starts as pending
-    dayImageDataUrl: dayUrl,
-    nightImageDataUrl: nightUrl || null,
-    createdAt: Date.now()
-  };
-
-  artworks = [newItem, ...artworks];
-  saveArtworks(artworks);
-
-  // clear form
-  uploadFormEl.reset();
-
-  // refresh lists
-  renderLists();
-});
-
-/* -------------------------
-   Render Pending / Approved
-   ------------------------- */
-
-function renderLists() {
-  const pending = artworks.filter(a => a.curated === false);
-  const approved = artworks.filter(a => a.curated !== false);
-
-  // pending list
-  if (pending.length === 0) {
-    curatorListEl.innerHTML = "";
-    noPendingEl.classList.remove("hidden");
-  } else {
-    noPendingEl.classList.add("hidden");
-    curatorListEl.innerHTML = pending.map(a => `
-      <div class="border rounded-xl overflow-hidden bg-white">
-        <div class="aspect-[3/4] bg-neutral-100">
-          <img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/>
-        </div>
-        <div class="p-3">
-          <div class="font-medium text-sm">${a.title}</div>
-          <div class="text-xs text-neutral-500 mb-2">
-            ${a.artist} • ${(a.tags||[]).join(", ") || "no tags"}
-          </div>
-          <div class="flex gap-2">
-            <button data-approve="${a.id}"
-              class="px-3 py-1 rounded-xl bg-neutral-900 text-white text-xs">
-              Approve
-            </button>
-            <button data-remove="${a.id}"
-              class="px-3 py-1 rounded-xl border text-xs">
-              Remove
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  // approved list
-  if (approved.length === 0) {
-    approvedListEl.innerHTML = "";
-    noApprovedEl.classList.remove("hidden");
-  } else {
-    noApprovedEl.classList.add("hidden");
-    approvedListEl.innerHTML = approved.map(a => `
-      <div class="border rounded-xl overflow-hidden bg-white">
-        <div class="aspect-[3/4] bg-neutral-100">
-          <img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/>
-        </div>
-        <div class="p-3">
-          <div class="font-medium text-sm">${a.title}</div>
-          <div class="text-xs text-neutral-500 mb-2">
-            ${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm
-          </div>
-          <div class="text-[11px] text-neutral-400">
-            Tags: ${(a.tags||[]).join(", ") || "none"}
-          </div>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  // attach curator action handlers
-  curatorListEl.querySelectorAll("[data-approve]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-approve");
-      artworks = artworks.map(x =>
-        x.id === id ? { ...x, curated: true } : x
-      );
-      saveArtworks(artworks);
-      renderLists();
-    });
-  });
-  curatorListEl.querySelectorAll("[data-remove]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-remove");
-      artworks = artworks.filter(x => x.id !== id);
-      saveArtworks(artworks);
-      renderLists();
-    });
-  });
-}
-
-/* -------------------------
-   Init
-   ------------------------- */
-
-function renderAll() {
-  YEAR_EL.textContent = new Date().getFullYear();
-  renderLists();
-}
-
-// Render now if logged in
-if (isAuthed()) {
-  renderAll();
-}
-</script>
+<body>
+<p class="p1"><span class="s1">&lt;!doctype html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="en"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width,initial-scale=1" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;title&gt;Kala Artist Portal&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;meta name="description" content="Artist dashboard for Kala. Upload artwork and submit for curation."&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;link rel="icon" href="data:,"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.hide-scrollbar::-webkit-scrollbar { display: none; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body class="bg-neutral-50 text-neutral-900"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold"&gt;K&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-xl font-semibold tracking-tight leading-none"&gt;Kala&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-[11px] text-neutral-500 leading-none"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Artist Portal · private</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;button id="logoutBtn" class="text-xs px-3 py-1.5 rounded-xl border hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Log out</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/header&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;main class="max-w-5xl mx-auto px-4 py-10 pb-24"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- LOGIN SCREEN --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section id="loginScreen" class="max-w-sm mx-auto border rounded-2xl bg-white shadow-sm p-6"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h1 class="text-lg font-semibold"&gt;Artist Login&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p class="text-sm text-neutral-500 mt-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>This area is for contributing artists and Kala curators only.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;form id="loginForm" class="mt-5 space-y-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Username&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input id="loginUser" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="your.name" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Password&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;input id="loginPass" type="password" class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="••••••••" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button class="w-full rounded-xl bg-neutral-900 text-white py-2 text-sm" type="submit"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>Sign in</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p id="loginError" class="text-[12px] text-red-600 hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>Incorrect username or password.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/form&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;p class="text-[11px] text-neutral-400 text-center mt-6 leading-snug"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Your uploads are not public immediately. A curator must approve</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>them before they appear on Kala.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- DASHBOARD SCREEN --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;section id="dashScreen" class="hidden space-y-10"&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;!-- Upload Artwork Card --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-2xl bg-white shadow-sm"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="px-4 py-3 border-b flex items-center justify-between"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-lg font-semibold"&gt;Upload Artwork&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-xs text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>Daylight photo is required. Night / warm-light photo is optional.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-[11px] text-neutral-400"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Saved locally · no server</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form id="uploadForm" class="p-4 grid md:grid-cols-2 gap-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;!-- Images column --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="space-y-5 rounded-2xl bg-neutral-50 p-4 border"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div class="text-sm text-neutral-700 font-medium mb-1"&gt;Day / normal light *&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="artFileDay" type="file" accept="image/*" capture="environment" class="block w-full text-sm" required /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;p class="text-[11px] text-neutral-500 mt-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>Clear, front-on photo of the work in natural/neutral lighting.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div class="text-sm text-neutral-700 font-medium mb-1"&gt;Night / warm light (optional)&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="artFileNight" type="file" accept="image/*" capture="environment" class="block w-full text-sm" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;p class="text-[11px] text-neutral-500 mt-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>Upload only if the artwork looks visibly different in evening lighting.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;!-- Metadata column --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="grid gap-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Title *&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="titleInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Ex: Midnight Rain" required /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Artist name *&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="artistInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="Your name / studio" required /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="grid grid-cols-2 gap-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Width (cm)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input id="widthInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="60" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Height (cm)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input id="heightInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="90" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;label class="block text-xs font-medium text-neutral-700 mb-1"&gt;Tags (comma separated)&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;input id="tagsInput" class="px-3 py-2 rounded-xl border w-full text-sm" placeholder="abstract, warm, texture" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button class="px-4 py-2 rounded-xl bg-neutral-900 text-white text-sm w-full md:w-auto" type="submit"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>Submit for review</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;!-- Pending / Curator Desk --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-2xl bg-white shadow-sm"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="px-4 py-3 border-b flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-lg font-semibold"&gt;Pending Review&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-xs text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>These pieces are waiting for curator approval. They are not yet visible in the public Kala gallery.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-[11px] text-neutral-400"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Curator can approve or remove below.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="curatorList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p id="noPending" class="p-4 text-sm text-neutral-500 hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>Nothing pending — all caught up.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;!-- Approved / Live --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-2xl bg-white shadow-sm"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="px-4 py-3 border-b flex items-center justify-between"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-lg font-semibold"&gt;Approved / Live&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="text-xs text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>These artworks are curated and can be seen by buyers on kala (homepage).</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;a href="index.html" class="text-xs underline text-neutral-600 hover:text-neutral-800"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>View public site </span><span class="s2">→</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="approvedList" class="p-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p id="noApproved" class="p-4 text-sm text-neutral-500 hidden"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>No approved works yet.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/section&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/main&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;footer class="border-t text-xs text-neutral-500"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-5xl mx-auto px-4 py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div&gt;© &lt;span id="year"&gt;&lt;/span&gt; Kala · Private artist portal&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div&gt;Curated only · No public checkout&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>&lt;/footer&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Basic "auth"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/*</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>This is intentionally simple client-side gating.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>You can change these credentials to anything you like.</span></p>
+<p class="p1"><span class="s1">*/</span></p>
+<p class="p1"><span class="s1">const VALID_USER = "artist";</span></p>
+<p class="p1"><span class="s1">const VALID_PASS = "kala2025";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const loginScreen = document.getElementById("loginScreen");</span></p>
+<p class="p1"><span class="s1">const dashScreen = document.getElementById("dashScreen");</span></p>
+<p class="p1"><span class="s1">const loginForm = document.getElementById("loginForm");</span></p>
+<p class="p1"><span class="s1">const loginUser = document.getElementById("loginUser");</span></p>
+<p class="p1"><span class="s1">const loginPass = document.getElementById("loginPass");</span></p>
+<p class="p1"><span class="s1">const loginError = document.getElementById("loginError");</span></p>
+<p class="p1"><span class="s1">const logoutBtn = document.getElementById("logoutBtn");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const YEAR_EL = document.getElementById("year");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const AUTH_KEY = "kala:artistAuth:v1"; // localStorage flag</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function isAuthed() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return localStorage.getItem(AUTH_KEY) === "true";</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function showLogin() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>loginScreen.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>dashScreen.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>logoutBtn.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function showDash() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>loginScreen.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>dashScreen.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>logoutBtn.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">loginForm.addEventListener("submit", (e) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>e.preventDefault();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const u = loginUser.value.trim();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const p = loginPass.value.trim();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (u === VALID_USER &amp;&amp; p === VALID_PASS) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>localStorage.setItem(AUTH_KEY, "true");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>loginError.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>showDash();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>renderAll(); // make sure UI reflects latest</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>loginError.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">logoutBtn.addEventListener("click", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.removeItem(AUTH_KEY);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>showLogin();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* init login state */</span></p>
+<p class="p1"><span class="s1">if (isAuthed()) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>showDash();</span></p>
+<p class="p1"><span class="s1">} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>showLogin();</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Shared data model</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const LS_KEY_ART = "curated-art-gallery:v1"; // same as index.html</span></p>
+<p class="p1"><span class="s1">// We keep all artworks (pending + approved) in one array, each item:</span></p>
+<p class="p1"><span class="s1">// { id, title, artist, widthCm, heightCm, tags[], curated(bool),</span></p>
+<p class="p1"><span class="s1">// <span class="Apple-converted-space">  </span>dayImageDataUrl, nightImageDataUrl, createdAt }</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const uid = () =&gt; Math.random().toString(36).slice(2);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function loadArtworks() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const raw = localStorage.getItem(LS_KEY_ART);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (raw) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>try { return JSON.parse(raw); } catch(e) { return []; }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// seed with 2 demo items if first ever load</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const seed = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>id: uid(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>title: "Quiet Mangroves",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artist: "A. Sen",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>widthCm: 80,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>heightCm: 60,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>tags: ["nature","landscape"],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>curated: true,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>nightImageDataUrl: null,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>createdAt: Date.now()-86400000*4</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>id: uid(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>title: "City in Monsoon",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artist: "G. Mane",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>widthCm: 60,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>heightCm: 90,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>tags: ["urban","rain"],</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>curated: true,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&amp;w=1600&amp;auto=format&amp;fit=crop",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>nightImageDataUrl: null,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>createdAt: Date.now()-86400000*2</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>},</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return seed;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function saveArtworks(items) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>localStorage.setItem(LS_KEY_ART, JSON.stringify(items));</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">let artworks = loadArtworks();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Elements for dashboard</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const uploadFormEl = document.getElementById("uploadForm");</span></p>
+<p class="p1"><span class="s1">const artFileDayEl = document.getElementById("artFileDay");</span></p>
+<p class="p1"><span class="s1">const artFileNightEl = document.getElementById("artFileNight");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const titleInputEl = document.getElementById("titleInput");</span></p>
+<p class="p1"><span class="s1">const artistInputEl = document.getElementById("artistInput");</span></p>
+<p class="p1"><span class="s1">const widthInputEl = document.getElementById("widthInput");</span></p>
+<p class="p1"><span class="s1">const heightInputEl = document.getElementById("heightInput");</span></p>
+<p class="p1"><span class="s1">const tagsInputEl = document.getElementById("tagsInput");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const curatorListEl = document.getElementById("curatorList");</span></p>
+<p class="p1"><span class="s1">const noPendingEl = document.getElementById("noPending");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const approvedListEl = document.getElementById("approvedList");</span></p>
+<p class="p1"><span class="s1">const noApprovedEl = document.getElementById("noApproved");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* Utility: convert file to base64 data URL */</span></p>
+<p class="p1"><span class="s1">function fileToDataUrl(file) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return new Promise((resolve, reject) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const reader = new FileReader();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.onload = ()=&gt; resolve(reader.result);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.onerror = reject;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>reader.readAsDataURL(file);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Upload handler</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p1"><span class="s1">uploadFormEl.addEventListener("submit", async (e) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>e.preventDefault();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!isAuthed()) return; // block if logged out mid-session</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const dayFile = artFileDayEl.files &amp;&amp; artFileDayEl.files[0];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (!dayFile) return; // required</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [dayUrl, nightUrl] = await Promise.all([</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>fileToDataUrl(dayFile),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>(async () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const nf = artFileNightEl.files &amp;&amp; artFileNightEl.files[0];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>if (!nf) return null;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>return fileToDataUrl(nf);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>})()</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>]);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const newItem = {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>id: uid(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>title: (titleInputEl.value || "Untitled").trim(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>artist: (artistInputEl.value || "Unknown").trim(),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>widthCm: parseFloat(widthInputEl.value) || undefined,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>heightCm: parseFloat(heightInputEl.value) || undefined,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>tags: (tagsInputEl.value || "")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.split(",")</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.map(s =&gt; s.trim())</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>.filter(Boolean),</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>curated: false, // starts as pending</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>dayImageDataUrl: dayUrl,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>nightImageDataUrl: nightUrl || null,</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>createdAt: Date.now()</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>artworks = [newItem, ...artworks];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>saveArtworks(artworks);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// clear form</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>uploadFormEl.reset();</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// refresh lists</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderLists();</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Render Pending / Approved</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function renderLists() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const pending = artworks.filter(a =&gt; a.curated === false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const approved = artworks.filter(a =&gt; a.curated !== false);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// pending list</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (pending.length === 0) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>curatorListEl.innerHTML = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>noPendingEl.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>noPendingEl.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>curatorListEl.innerHTML = pending.map(a =&gt; `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-xl overflow-hidden bg-white"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="aspect-[3/4] bg-neutral-100"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="p-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="font-medium text-sm"&gt;${a.title}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-xs text-neutral-500 mb-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>${a.artist} • ${(a.tags||[]).join(", ") || "no tags"}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="flex gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button data-approve="${a.id}"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>class="px-3 py-1 rounded-xl bg-neutral-900 text-white text-xs"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>Approve</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button data-remove="${a.id}"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>class="px-3 py-1 rounded-xl border text-xs"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>Remove</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>`).join("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// approved list</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>if (approved.length === 0) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>approvedListEl.innerHTML = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>noApprovedEl.classList.remove("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>noApprovedEl.classList.add("hidden");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>approvedListEl.innerHTML = approved.map(a =&gt; `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div class="border rounded-xl overflow-hidden bg-white"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="aspect-[3/4] bg-neutral-100"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;img src="${a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="p-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="font-medium text-sm"&gt;${a.title}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-xs text-neutral-500 mb-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div class="text-[11px] text-neutral-400"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Tags: ${(a.tags||[]).join(", ") || "none"}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>`).join("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// attach curator action handlers</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>curatorListEl.querySelectorAll("[data-approve]").forEach(btn =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const id = btn.getAttribute("data-approve");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artworks = artworks.map(x =&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>x.id === id ? { ...x, curated: true } : x</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>saveArtworks(artworks);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderLists();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>curatorListEl.querySelectorAll("[data-remove]").forEach(btn =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>btn.addEventListener("click", () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>const id = btn.getAttribute("data-remove");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>artworks = artworks.filter(x =&gt; x.id !== id);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>saveArtworks(artworks);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>renderLists();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>});</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">/* -------------------------</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>Init</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">   </span>------------------------- */</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function renderAll() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>YEAR_EL.textContent = new Date().getFullYear();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderLists();</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// Render now if logged in</span></p>
+<p class="p1"><span class="s1">if (isAuthed()) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>renderAll();</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
 </body>
 </html>
-
