@@ -97,23 +97,23 @@
         </div>
 
         <!-- main stage with day/night stack -->
-        <div id="viewerStage" class="relative bg-neutral-100 select-none grab" style="height:60vh">
-          <!-- base (day/main) image -->
-          <img
-            id="viewerImgDay"
-            class="absolute top-1/2 left-1/2 will-change-transform"
-            style="max-width:unset; max-height:unset; width:auto; height:100%;"
-            alt="Artwork daylight view"
-          />
+       <div id="viewerStage" class="relative bg-neutral-100 select-none grab flex items-center justify-center overflow-hidden"  style="height:60vh">
+        <!-- We'll wrap both images in a single container that we transform -->
+        <div id="viewerImgWrapper" class="relative">
+        <img
+          id="viewerImgDay"
+          class="block max-h-[60vh] max-w-[90vw] object-contain"
+          alt="Artwork daylight view"
+        />
+      <img
+          id="viewerImgNight"
+          class="block max-h-[60vh] max-w-[90vw] object-contain absolute inset-0 pointer-events-none"
+          style="opacity:0;"
+          alt="Artwork night view"
+        />
+      </div>
+    </div>
 
-          <!-- night overlay image (optional) -->
-          <img
-            id="viewerImgNight"
-            class="absolute top-1/2 left-1/2 will-change-transform pointer-events-none"
-            style="max-width:unset; max-height:unset; width:auto; height:100%; opacity:0;"
-            alt="Artwork night view"
-          />
-        </div>
 
         <!-- Lighting slider (hidden if no night version for this artwork) -->
         <div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2">
