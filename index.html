@@ -199,6 +199,14 @@ const LS_KEY_FAV = "kala:favorites:v1";
 
 const uid = () => Math.random().toString(36).slice(2);
 
+function lockBodyScroll() {
+  document.body.style.overflow = "hidden";
+}
+function unlockBodyScroll() {
+  document.body.style.overflow = "";
+}
+
+
 function loadArtworks() {
   const raw = localStorage.getItem(LS_KEY_ART);
   if (raw) {
