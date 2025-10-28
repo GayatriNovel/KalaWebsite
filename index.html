@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kala — Original & Premium Artwork by Women</title>
-  <meta name="description" content="Kala is a curated, display-only showcase for original and premium artwork by women. Artists submit, curators approve, collectors preview art in their own space.">
+  <meta name="description" content="Kala is a curated showcase of original and premium artwork by women. Browse, preview on your wall, and save your favorites.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="data:,"/>
   <style>
@@ -12,6 +12,7 @@
     .grabbing { cursor: grabbing; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .fav-active { color: rgb(219 39 119); } /* pink-600 */
   </style>
 </head>
 <body class="bg-neutral-50 text-neutral-900">
@@ -21,13 +22,15 @@
       <div class="flex-1">
         <h1 class="text-xl md:text-2xl font-semibold tracking-tight">Kala</h1>
         <p class="text-xs md:text-sm text-neutral-500">
-          Original & premium artwork by women • curated display
+          Original & premium artwork by women • curated viewing
         </p>
       </div>
       <nav class="hidden md:flex gap-2" aria-label="Primary">
         <a href="#gallery" class="px-3 py-2 rounded-2xl border">Gallery</a>
         <a href="#visualize" class="px-3 py-2 rounded-2xl border">Visualize</a>
-        <a href="#upload" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white">Submit Artwork</a>
+        <a href="#favorites" class="px-3 py-2 rounded-2xl border">My Favorites</a>
+        <!-- seller login/link goes to seller.html (private area) -->
+        <a href="seller.html" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white">Artist Login</a>
       </nav>
     </div>
   </header>
@@ -41,17 +44,17 @@
             Discover <span class="underline underline-offset-4 decoration-2">original, premium artwork by women</span>
           </h2>
           <p class="mt-3 text-neutral-600">
-            Kala is a curated, display-only showcase. Artists submit, curators approve, and anyone can browse.
-            No sign-ups, no checkout — just a beautiful viewing experience with zoom and in-room previews.
+            Browse curated works. Zoom in on detail. See how a piece looks in your own room — in daylight and at night.
+            Shortlist what you love. No login required.
           </p>
           <div class="mt-5 flex gap-2">
             <a href="#gallery" class="px-4 py-2 rounded-2xl bg-neutral-900 text-white">Browse Gallery</a>
-            <a href="#visualize" class="px-4 py-2 rounded-2xl border">Try Room Preview</a>
+            <a href="#visualize" class="px-4 py-2 rounded-2xl border">Preview on Your Wall</a>
           </div>
         </div>
         <div class="aspect-[16/10] rounded-2xl overflow-hidden shadow-lg bg-white grid place-items-center">
           <div class="p-6 text-center">
-            <div class="text-sm text-neutral-500">Zoom • Pan • Visualize on your wall</div>
+            <div class="text-sm text-neutral-500">Zoom • Pan • Day / Night • Visualize in space</div>
             <img id="hero-image" alt="Featured artwork" class="mt-3 max-h-64 object-cover rounded-xl" />
           </div>
         </div>
@@ -60,7 +63,6 @@
 
     <!-- GALLERY -->
     <section id="gallery" class="py-6" aria-labelledby="gallery-heading">
-      <h3 id="gallery-heading" class="sr-only">Kala Gallery</h3>
       <div class="flex items-center gap-3 mb-4">
         <div class="relative flex-1">
           <input id="search" placeholder="Search title, artist, tags..." class="pl-3 pr-3 py-2 w-full rounded-2xl border" />
@@ -73,6 +75,7 @@
         </div>
       </div>
       <p id="noResults" class="text-neutral-500 hidden">No artworks match. Try clearing filters.</p>
+
       <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
     </section>
 
@@ -80,7 +83,10 @@
     <div id="viewer" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Artwork viewer">
       <div class="bg-white rounded-xl max-w-4xl w-full overflow-hidden">
         <div class="flex items-center justify-between px-4 py-3 border-b">
-          <div id="viewerTitle" class="text-sm md:text-base font-semibold"></div>
+          <div class="flex flex-col">
+            <div id="viewerTitle" class="text-sm md:text-base font-semibold"></div>
+            <button id="favToggleViewer" class="text-xs text-neutral-500 text-left">♡ Save to favorites</button>
+          </div>
           <div class="flex items-center gap-2">
             <button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out">-</button>
             <div id="zoomLabel" class="w-16 text-center text-xs" aria-live="polite">100%</div>
@@ -126,7 +132,7 @@
     <section id="visualize" class="py-10" aria-labelledby="visualize-heading">
       <h3 id="visualize-heading" class="sr-only">Visualize artwork on your wall</h3>
       <div class="border rounded-2xl">
-        <div class="px-4 py-3 border-b text-lg font-semibold">Visualize on your wall</div>
+        <div class="px-4 py-3 border-b text-lg font-semibold">Preview in Your Space</div>
         <div class="grid lg:grid-cols-5 gap-6 p-4">
           <div class="lg:col-span-3">
             <div id="roomStage" class="aspect-[16/9] bg-neutral-100 rounded-2xl overflow-hidden relative">
@@ -159,79 +165,35 @@
       </div>
     </section>
 
-    <!-- UPLOAD / CURATOR -->
-    <section id="upload" class="py-10" aria-labelledby="upload-heading">
-      <h3 id="upload-heading" class="sr-only">Artist submission & curator review</h3>
-
-      <div class="border rounded-2xl mb-8">
-        <div class="px-4 py-3 border-b text-lg font-semibold">Artist Submission (Kala)</div>
-
-        <form id="uploadForm" class="p-4 grid md:grid-cols-2 gap-4">
-          <div class="border rounded-2xl p-4 bg-neutral-50 space-y-4">
-            <div>
-              <div class="text-sm text-neutral-600 mb-1">Main photo</div>
-              <input id="artFileDay" type="file" accept="image/*" capture="environment" class="block w-full text-sm" required />
-              <p class="text-[11px] text-neutral-500">
-                Standard photo of the artwork (required).
-              </p>
-            </div>
-
-            <div>
-              <div class="text-sm text-neutral-600 mb-1">Night / warm light photo (optional)</div>
-              <input id="artFileNight" type="file" accept="image/*" capture="environment" class="block w-full text-sm" />
-              <p class="text-[11px] text-neutral-500">
-                Only upload if the artwork looks different under evening lighting.
-              </p>
-            </div>
-
-            <p class="text-xs text-neutral-500">
-              Uploads are saved locally and hidden until a curator approves.
-            </p>
-          </div>
-
-          <div class="grid gap-3">
-            <input id="titleInput" placeholder="Title" class="px-3 py-2 rounded-2xl border" />
-            <input id="artistInput" placeholder="Artist name" class="px-3 py-2 rounded-2xl border" />
-            <div class="grid grid-cols-2 gap-3">
-              <input id="widthInput" placeholder="Width (cm)" class="px-3 py-2 rounded-2xl border" />
-              <input id="heightInput" placeholder="Height (cm)" class="px-3 py-2 rounded-2xl border" />
-            </div>
-            <input id="tagsInput" placeholder="Tags (comma separated)" class="px-3 py-2 rounded-2xl border" />
-            <div>
-              <button class="px-4 py-2 rounded-2xl bg-neutral-900 text-white" type="submit">
-                Add for Review
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-
+    <!-- FAVORITES -->
+    <section id="favorites" class="py-10">
       <div class="border rounded-2xl">
-        <div class="px-4 py-3 border-b text-lg font-semibold">Curator Desk (Kala)</div>
-        <div id="curatorList" class="p-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <p id="noPending" class="p-4 text-sm text-neutral-500 hidden">No pending submissions.</p>
+        <div class="px-4 py-3 border-b text-lg font-semibold">Your Favorites</div>
+        <div id="favoritesGrid" class="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        <p id="noFavs" class="p-4 text-sm text-neutral-500 hidden">You haven't saved any pieces yet. Tap ♡ on a piece to save it here.</p>
       </div>
     </section>
 
     <footer class="mt-14 pt-8 border-t text-sm text-neutral-500">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-10">
         <div>© <span id="year"></span> <span class="font-medium text-neutral-700">Kala</span>. Original & premium artwork by women.</div>
-        <div>No logins • No payments • Local-only demo data</div>
+        <div>No logins to browse • No payments • Curated only</div>
       </div>
     </footer>
   </main>
 
 <script>
-// --- Simple Data Layer (localStorage) ---
-const LS_KEY = "curated-art-gallery:v1"; // keeping same key so existing browser data still loads
+/* ===== Data Layer ===== */
+const LS_KEY_ART = "curated-art-gallery:v1";
+const LS_KEY_FAV = "kala:favorites:v1";
+
 const uid = () => Math.random().toString(36).slice(2);
 
 function loadArtworks() {
-  const raw = localStorage.getItem(LS_KEY);
+  const raw = localStorage.getItem(LS_KEY_ART);
   if (raw) {
     try { return JSON.parse(raw); } catch(e) { return []; }
   }
-  // seed with demo images (Unsplash public links)
   const seed = [
     {
       id: uid(),
@@ -241,7 +203,6 @@ function loadArtworks() {
       heightCm: 60,
       tags: ["nature","landscape"],
       curated: true,
-      // we'll keep using imageDataUrl as the default display image
       imageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
       dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
       nightImageDataUrl: null,
@@ -261,14 +222,26 @@ function loadArtworks() {
       createdAt: Date.now()-86400000*2
     },
   ];
-  localStorage.setItem(LS_KEY, JSON.stringify(seed));
+  localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));
   return seed;
 }
-function saveArtworks(items) { localStorage.setItem(LS_KEY, JSON.stringify(items)); }
+function saveArtworks(items) {
+  localStorage.setItem(LS_KEY_ART, JSON.stringify(items));
+}
+
+function loadFavorites() {
+  const raw = localStorage.getItem(LS_KEY_FAV);
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch(e) { return []; }
+}
+function saveFavorites(favs) {
+  localStorage.setItem(LS_KEY_FAV, JSON.stringify(favs));
+}
 
 let artworks = loadArtworks();
+let favorites = loadFavorites();
 
-// --- UI Refs ---
+/* ===== UI refs ===== */
 const heroImage = document.getElementById("hero-image");
 const galleryGrid = document.getElementById("galleryGrid");
 const searchInput = document.getElementById("search");
@@ -277,29 +250,24 @@ const noResults = document.getElementById("noResults");
 const yearEl = document.getElementById("year");
 yearEl.textContent = new Date().getFullYear();
 
-// Viewer refs
+/* Viewer refs */
 const viewerEl = document.getElementById("viewer");
 const viewerTitle = document.getElementById("viewerTitle");
-const viewerStage = document.getElementById("viewerStage");
 const viewerImgDay = document.getElementById("viewerImgDay");
 const viewerImgNight = document.getElementById("viewerImgNight");
 const lightSlider = document.getElementById("lightSlider");
 const lightSliderWrapper = document.getElementById("lightSliderWrapper");
+const favToggleViewer = document.getElementById("favToggleViewer");
 
+const viewerStage = document.getElementById("viewerStage");
 const zoomInBtn = document.getElementById("zoomIn");
 const zoomOutBtn = document.getElementById("zoomOut");
 const resetViewBtn = document.getElementById("resetView");
 const closeViewerBtn = document.getElementById("closeViewer");
 const zoomLabel = document.getElementById("zoomLabel");
 const viewerMeta = document.getElementById("viewerMeta");
-let currentArtwork = null;
-let zoom = 1;
-let pan = {x:0,y:0};
-let dragging = false;
-let startPt = {x:0,y:0};
-let startPan = {x:0,y:0};
 
-// Visualizer refs
+/* Visualizer refs */
 const roomFile = document.getElementById("roomFile");
 const roomImg = document.getElementById("roomImg");
 const roomPlaceholder = document.getElementById("roomPlaceholder");
@@ -309,23 +277,24 @@ const selectedMeta = document.getElementById("selectedMeta");
 const ovScale = document.getElementById("ovScale");
 const ovRotate = document.getElementById("ovRotate");
 const ovReset = document.getElementById("ovReset");
+
+/* Favorites refs */
+const favoritesGrid = document.getElementById("favoritesGrid");
+const noFavs = document.getElementById("noFavs");
+
+/* state */
+let currentArtwork = null;
+let zoom = 1;
+let pan = {x:0,y:0};
+let dragging = false;
+let startPt = {x:0,y:0};
+let startPan = {x:0,y:0};
+
 let pickId = null;
 let ov = { scale: 0.6, rot: 0, pos: {x:50,y:55} };
 let ovDragging = false;
 
-// Upload/Curator refs
-const uploadForm = document.getElementById("uploadForm");
-const artFileDay = document.getElementById("artFileDay");
-const artFileNight = document.getElementById("artFileNight");
-const titleInput = document.getElementById("titleInput");
-const artistInput = document.getElementById("artistInput");
-const widthInput = document.getElementById("widthInput");
-const heightInput = document.getElementById("heightInput");
-const tagsInput = document.getElementById("tagsInput");
-const curatorList = document.getElementById("curatorList");
-const noPending = document.getElementById("noPending");
-
-// --- Helpers ---
+/* ===== Helpers ===== */
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -334,20 +303,52 @@ function fileToDataUrl(file) {
     reader.readAsDataURL(file);
   });
 }
-function setHero() {
-  const curated = artworks.filter(a=>a.curated!==false).sort((a,b)=>b.createdAt-a.createdAt);
-  heroImage.src = curated[0] ? (curated[0].imageDataUrl || curated[0].dayImageDataUrl) :
-                  (artworks[0] ? (artworks[0].imageDataUrl || artworks[0].dayImageDataUrl) : "");
+
+function isFav(id) {
+  return favorites.includes(id);
+}
+function toggleFav(id) {
+  if (isFav(id)) {
+    favorites = favorites.filter(x => x !== id);
+  } else {
+    favorites = [id, ...favorites];
+  }
+  saveFavorites(favorites);
+  renderGallery();   // update ♡ in cards
+  renderFavorites(); // update favorites section
+  updateFavInViewer();
 }
 
-// --- Gallery Render ---
+function updateFavInViewer() {
+  if (!currentArtwork) return;
+  if (isFav(currentArtwork.id)) {
+    favToggleViewer.textContent = "♥ Saved to favorites";
+    favToggleViewer.classList.add("fav-active");
+  } else {
+    favToggleViewer.textContent = "♡ Save to favorites";
+    favToggleViewer.classList.remove("fav-active");
+  }
+}
+
+function setHero() {
+  const curated = artworks.filter(a=>a.curated!==false).sort((a,b)=>b.createdAt-a.createdAt);
+  const top = curated[0] || artworks[0];
+  if (top) {
+    heroImage.src = top.imageDataUrl || top.dayImageDataUrl;
+  }
+}
+
+/* ===== Gallery Render ===== */
 function renderArtistFilter() {
   const unique = Array.from(new Set(artworks.map(a=>a.artist))).filter(Boolean).sort();
-  artistFilter.innerHTML = '<option value="all">All artists</option>' + unique.map(a=>`<option value="${a}">${a}</option>`).join("");
+  artistFilter.innerHTML = '<option value="all">All artists</option>' +
+    unique.map(a=>`<option value="${a}">${a}</option>`).join("");
 }
+
 function renderGallery() {
   const q = (searchInput.value||"").trim().toLowerCase();
   const af = artistFilter.value;
+
   const curated = artworks
     .filter(a=>a.curated!==false)
     .sort((a,b)=>b.createdAt-a.createdAt);
@@ -360,20 +361,26 @@ function renderGallery() {
 
   noResults.classList.toggle("hidden", filtered.length>0);
 
-  galleryGrid.innerHTML = filtered.map(a => `
-    <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow">
+  galleryGrid.innerHTML = filtered.map(a => {
+    const favClass = isFav(a.id) ? "fav-active" : "text-neutral-400";
+    return `
+    <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow relative">
       <button data-open="${a.id}" class="block text-left w-full">
         <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
           <img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover hover:scale-105 transition-transform"/>
         </div>
-        <div class="p-3">
-          <div class="text-sm font-medium leading-tight">${a.title}</div>
-          <div class="text-xs text-neutral-500">${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm</div>
+        <div class="p-3 flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
+            <div class="text-xs text-neutral-500 truncate">${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm</div>
+          </div>
+          <button data-fav="${a.id}" class="text-xs ${favClass} whitespace-nowrap">♡</button>
         </div>
       </button>
-    </div>`).join("");
+    </div>`;
+  }).join("");
 
-  // attach open handlers
+  // open handlers
   galleryGrid.querySelectorAll("[data-open]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const id = btn.getAttribute("data-open");
@@ -381,17 +388,25 @@ function renderGallery() {
       openViewer(art);
     });
   });
+
+  // fav buttons
+  galleryGrid.querySelectorAll("[data-fav]").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      const id = btn.getAttribute("data-fav");
+      toggleFav(id);
+    });
+  });
 }
 
-// --- Viewer Logic (with optional day/night slider) ---
+/* ===== Viewer Logic ===== */
 function openViewer(art) {
   currentArtwork = art;
   zoom = 1;
   pan = {x:0,y:0};
 
-  // choose sources
   const daySrc   = art.dayImageDataUrl || art.imageDataUrl || "";
-  const nightSrc = art.nightImageDataUrl; // may be null
+  const nightSrc = art.nightImageDataUrl;
 
   viewerImgDay.src = daySrc;
   viewerImgNight.style.opacity = 0;
@@ -402,7 +417,6 @@ function openViewer(art) {
     lightSlider.value = 0;
     viewerImgNight.style.opacity = 0;
   } else {
-    // no alternate lighting view
     viewerImgNight.src = daySrc;
     lightSliderWrapper.classList.add("hidden");
     viewerImgNight.style.opacity = 0;
@@ -412,12 +426,11 @@ function openViewer(art) {
   viewerMeta.textContent = `Size: ${art.widthCm||"?"}×${art.heightCm||"?"} cm • Tags: ${(art.tags||[]).join(", ")||"none"}`;
 
   updateViewerTransform();
+  updateFavInViewer();
   viewerEl.classList.remove("hidden");
 }
 
-function closeViewer() {
-  viewerEl.classList.add("hidden");
-}
+function closeViewer() { viewerEl.classList.add("hidden"); }
 
 function updateViewerTransform() {
   const t = `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
@@ -426,7 +439,7 @@ function updateViewerTransform() {
   zoomLabel.textContent = Math.round(zoom*100) + "%";
 }
 
-// zoom / pan / close handlers
+// zoom / pan events
 zoomInBtn.addEventListener("click", ()=>{
   zoom = Math.min(4, zoom+0.2);
   updateViewerTransform();
@@ -468,14 +481,20 @@ viewerStage.addEventListener("mousemove", (e)=>{
   updateViewerTransform();
 });
 
-// day ↔ night slider
+// lighting blend
 lightSlider.addEventListener("input", (e) => {
-  const v = parseInt(e.target.value, 10); // 0..100
-  const alpha = v / 100;                 // 0 = day, 1 = night
+  const v = parseInt(e.target.value, 10);
+  const alpha = v / 100;
   viewerImgNight.style.opacity = alpha;
 });
 
-// --- Visualizer Logic (room preview) ---
+// favorite from inside viewer
+favToggleViewer.addEventListener("click", ()=>{
+  if (!currentArtwork) return;
+  toggleFav(currentArtwork.id);
+});
+
+/* ===== Visualizer (Preview in Your Space) ===== */
 function setRoomPlaceholder(show) {
   roomPlaceholder.classList.toggle("hidden", !show);
   roomImg.classList.toggle("hidden", show);
@@ -564,98 +583,64 @@ ovReset.addEventListener("click", ()=>{
   updateOverlay();
 });
 
-// --- Upload & Curator ---
-uploadForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
+/* ===== Favorites section render ===== */
+function renderFavorites() {
+  if (!favorites.length) {
+    favoritesGrid.innerHTML = "";
+    noFavs.classList.remove("hidden");
+    return;
+  }
+  noFavs.classList.add("hidden");
 
-  const fDay = artFileDay.files && artFileDay.files[0];
-  if (!fDay) return; // main photo required
+  const favArtworks = favorites
+    .map(id => artworks.find(a => a.id === id))
+    .filter(Boolean);
 
-  const fNight = artFileNight.files && artFileNight.files[0];
-
-  const dayUrl   = await fileToDataUrl(fDay);
-  const nightUrl = fNight ? await fileToDataUrl(fNight) : null;
-
-  const item = {
-    id: uid(),
-    title: (titleInput.value||"Untitled").trim(),
-    artist: (artistInput.value||"Unknown").trim(),
-    widthCm: parseFloat(widthInput.value)||undefined,
-    heightCm: parseFloat(heightInput.value)||undefined,
-    tags: (tagsInput.value||"").split(",").map(s=>s.trim()).filter(Boolean),
-    curated: false,
-
-    dayImageDataUrl: dayUrl,
-    nightImageDataUrl: nightUrl,
-    // for gallery & thumbnail, keep a single canonical field
-    imageDataUrl: dayUrl,
-
-    createdAt: Date.now(),
-  };
-
-  artworks = [item, ...artworks];
-  saveArtworks(artworks);
-  renderAll();
-  uploadForm.reset();
-});
-
-function renderCurator() {
-  const pending = artworks.filter(a=>a.curated===false);
-  curatorList.innerHTML = pending.map(a => `
-    <div class="border rounded-xl overflow-hidden bg-white">
-      <div class="aspect-[3/4] bg-neutral-100">
-        <img src="${a.imageDataUrl || a.dayImageDataUrl}" alt="${a.title}" class="w-full h-full object-cover"/>
+  favoritesGrid.innerHTML = favArtworks.map(a => `
+    <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow">
+      <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
+        <img alt="${a.title}" src="${a.imageDataUrl || a.dayImageDataUrl}" class="w-full h-full object-cover"/>
       </div>
-      <div class="p-3">
-        <div class="font-medium text-sm">${a.title}</div>
-        <div class="text-xs text-neutral-500 mb-2">${a.artist} • ${(a.tags||[]).join(", ")||"no tags"}</div>
-        <div class="flex gap-2">
-          <button data-approve="${a.id}" class="px-3 py-1 rounded-xl bg-neutral-900 text-white text-sm">Approve</button>
-          <button data-remove="${a.id}" class="px-3 py-1 rounded-xl border text-sm">Remove</button>
+      <div class="p-3 flex items-start justify-between gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
+          <div class="text-xs text-neutral-500 truncate">${a.artist}</div>
         </div>
+        <button data-fav-remove="${a.id}" class="text-xs text-neutral-400 whitespace-nowrap">✕</button>
       </div>
-    </div>`).join("");
+    </div>
+  `).join("");
 
-  noPending.classList.toggle("hidden", pending.length>0);
-
-  curatorList.querySelectorAll("[data-approve]").forEach(btn => {
+  favoritesGrid.querySelectorAll("[data-fav-remove]").forEach(btn=>{
     btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-approve");
-      artworks = artworks.map(x=> x.id===id ? {...x, curated:true} : x);
-      saveArtworks(artworks);
-      renderAll();
-    });
-  });
-
-  curatorList.querySelectorAll("[data-remove]").forEach(btn => {
-    btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-remove");
-      artworks = artworks.filter(x=> x.id!==id);
-      saveArtworks(artworks);
-      renderAll();
+      const id = btn.getAttribute("data-fav-remove");
+      favorites = favorites.filter(x => x !== id);
+      saveFavorites(favorites);
+      renderGallery();
+      renderFavorites();
+      updateFavInViewer();
     });
   });
 }
 
-// --- Search handlers ---
+/* ===== Search handlers ===== */
 searchInput.addEventListener("input", renderGallery);
 artistFilter.addEventListener("change", renderGallery);
 
-// --- Initial Render ---
+/* ===== Initial render ===== */
 function renderAll() {
   setHero();
   renderArtistFilter();
   renderGallery();
+  renderFavorites();
+
   if (!pickId && artworks.length) {
     pickId = artworks.find(a=>a.curated!==false)?.id || artworks[0].id;
   }
   renderPicker();
   updateOverlay();
-  renderCurator();
 }
-
 renderAll();
 </script>
-
 </body>
 </html>
