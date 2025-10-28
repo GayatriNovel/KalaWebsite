@@ -13,152 +13,158 @@
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .fav-active { color: rgb(219 39 119); } /* pink-600 */
+
+    /* fullscreen viewer backdrop layout */
+    #viewer {
+      position: fixed;
+      inset: 0;
+      display: none;              /* hidden by default */
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 1000;
+    }
+    #viewer:not(.hidden) {
+      display: flex;
+    }
   </style>
 </head>
-
 <body class="bg-neutral-50 text-neutral-900">
-  <!-- SITE HEADER -->
+  <!-- HEADER -->
   <header class="sticky top-0 z-40 backdrop-blur bg-white/80 border-b">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-neutral-900 text-white grid place-content-center font-semibold" aria-label="Kala logo">K</div>
-      <div class="flex-1 min-w-0">
-        <h1 class="text-xl md:text-2xl font-semibold tracking-tight truncate">Kala</h1>
-        <p class="text-xs md:text-sm text-neutral-500 truncate">
+      <div class="flex-1">
+        <h1 class="text-xl md:text-2xl font-semibold tracking-tight">Kala</h1>
+        <p class="text-xs md:text-sm text-neutral-500">
           Original & premium artwork by women • curated viewing
         </p>
       </div>
-      <nav class="hidden md:flex gap-2 flex-shrink-0" aria-label="Primary">
-        <a href="#gallery" class="px-3 py-2 rounded-2xl border text-sm">Gallery</a>
-        <a href="#visualize" class="px-3 py-2 rounded-2xl border text-sm">Visualize</a>
-        <a href="#favorites" class="px-3 py-2 rounded-2xl border text-sm">My Favorites</a>
-        <a href="artist.html" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white text-sm">Artist Login</a>
+      <nav class="hidden md:flex gap-2" aria-label="Primary">
+        <a href="#gallery" class="px-3 py-2 rounded-2xl border">Gallery</a>
+        <a href="#visualize" class="px-3 py-2 rounded-2xl border">Visualize</a>
+        <a href="#favorites" class="px-3 py-2 rounded-2xl border">My Favorites</a>
+        <!-- Private upload portal for artists -->
+        <a href="artist.html" class="px-3 py-2 rounded-2xl bg-neutral-900 text-white">Artist Login</a>
       </nav>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 pb-16">
-
-    <!-- HERO / INTRO -->
+    <!-- HERO -->
     <section class="py-10 md:py-14">
       <div class="grid md:grid-cols-2 gap-6 items-center">
         <div>
           <h2 class="text-3xl md:text-4xl font-semibold leading-tight">
             Discover <span class="underline underline-offset-4 decoration-2">original, premium artwork by women</span>
           </h2>
-          <p class="mt-3 text-neutral-600 text-base md:text-lg">
+          <p class="mt-3 text-neutral-600">
             Browse curated works. Zoom in on detail. See how a piece looks in your own room — in daylight and at night.
             Shortlist what you love. No login required.
           </p>
-          <div class="mt-5 flex flex-wrap gap-2">
-            <a href="#gallery" class="px-4 py-2 rounded-2xl bg-neutral-900 text-white text-sm md:text-base">Browse Gallery</a>
-            <a href="#visualize" class="px-4 py-2 rounded-2xl border text-sm md:text-base">Preview on Your Wall</a>
+          <div class="mt-5 flex gap-2">
+            <a href="#gallery" class="px-4 py-2 rounded-2xl bg-neutral-900 text-white">Browse Gallery</a>
+            <a href="#visualize" class="px-4 py-2 rounded-2xl border">Preview on Your Wall</a>
           </div>
         </div>
-
-        <div class="aspect-[16/10] rounded-2xl overflow-hidden shadow-lg bg-white grid place-items-center border">
+        <div class="aspect-[16/10] rounded-2xl overflow-hidden shadow-lg bg-white grid place-items-center">
           <div class="p-6 text-center">
             <div class="text-sm text-neutral-500">Zoom • Pan • Day / Night • Visualize in space</div>
-            <img id="hero-image" alt="Featured artwork" class="mt-3 max-h-64 object-cover rounded-xl mx-auto" />
+            <img id="hero-image" alt="Featured artwork" class="mt-3 max-h-64 object-cover rounded-xl" />
           </div>
         </div>
       </div>
     </section>
 
     <!-- GALLERY -->
-    <section id="gallery" class="py-6">
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
+    <section id="gallery" class="py-6" aria-labelledby="gallery-heading">
+      <div class="flex items-center gap-3 mb-4">
         <div class="relative flex-1">
-          <input
-            id="search"
-            placeholder="Search title, artist, tags..."
-            class="pl-3 pr-3 py-2 w-full rounded-2xl border text-sm"
-          />
+          <input id="search" placeholder="Search title, artist, tags..." class="pl-3 pr-3 py-2 w-full rounded-2xl border" />
         </div>
-        <div class="flex items-center gap-2">
+        <div>
           <label for="artistFilter" class="sr-only">Filter by artist</label>
-          <select
-            id="artistFilter"
-            class="border rounded-2xl px-3 py-2 bg-white text-sm"
-          >
+          <select id="artistFilter" class="border rounded-2xl px-3 py-2 bg-white">
             <option value="all">All artists</option>
           </select>
         </div>
       </div>
+      <p id="noResults" class="text-neutral-500 hidden">No artworks match. Try clearing filters.</p>
 
-      <p id="noResults" class="text-neutral-500 hidden text-sm mb-4">No artworks match. Try clearing filters.</p>
-
-      <!-- cards go here -->
       <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
     </section>
 
-    <!-- ART VIEWER MODAL (fullscreen lightbox) -->
+    <!-- FULLSCREEN VIEWER MODAL -->
     <div
       id="viewer"
-      class="fixed inset-0 z-[9999] hidden"
-      aria-modal="true"
+      class="hidden"
       role="dialog"
+      aria-modal="true"
       aria-label="Artwork viewer"
     >
-      <!-- Backdrop -->
+      <!-- dark backdrop behind the card -->
       <div
         id="viewerBackdrop"
-        class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        class="fixed inset-0 bg-black/60"
+        style="z-index: 999;"
       ></div>
 
-      <!-- Dialog panel -->
+      <!-- the white card itself -->
       <div
-        class="relative max-w-4xl w-[90vw] max-h-[90vh] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden
-               left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        class="relative bg-white rounded-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-xl"
+        style="z-index: 1000;"
       >
-        <!-- Header row with title + controls -->
-        <div class="flex flex-col md:flex-row md:items-start md:justify-between px-4 py-3 border-b bg-white/90 gap-3">
-          <div class="flex flex-col flex-1 min-w-0">
+        <!-- top bar -->
+        <div class="flex items-center justify-between px-4 py-3 border-b">
+          <div class="flex flex-col min-w-0">
             <div id="viewerTitle" class="text-sm md:text-base font-semibold truncate"></div>
-            <button
-              id="favToggleViewer"
-              class="text-xs text-neutral-500 text-left"
-            >
-              ♡ Save to favorites
-            </button>
+            <button id="favToggleViewer" class="text-xs text-neutral-500 text-left">♡ Save to favorites</button>
           </div>
-
-          <div class="flex items-center flex-wrap gap-2 text-xs md:text-[11px]">
-            <button id="zoomOut" class="px-2 py-1 border rounded" aria-label="Zoom out">-</button>
-            <div id="zoomLabel" class="w-16 text-center" aria-live="polite">100%</div>
-            <button id="zoomIn" class="px-2 py-1 border rounded" aria-label="Zoom in">+</button>
-            <button id="resetView" class="px-2 py-1 border rounded" aria-label="Reset view">Reset</button>
-
-            <button
-              id="closeViewer"
-              class="ml-2 px-2 py-1 rounded bg-neutral-900 text-white"
-              aria-label="Close viewer"
-            >
-              ✕
-            </button>
+          <div class="flex items-center gap-2">
+            <button id="zoomOut" class="px-2 py-1 border rounded text-sm leading-none" aria-label="Zoom out">-</button>
+            <div id="zoomLabel" class="w-16 text-center text-xs" aria-live="polite">100%</div>
+            <button id="zoomIn" class="px-2 py-1 border rounded text-sm leading-none" aria-label="Zoom in">+</button>
+            <button id="resetView" class="px-2 py-1 text-sm leading-none" aria-label="Reset view">Reset</button>
+            <button id="closeViewer" class="px-2 py-1 text-sm leading-none" aria-label="Close viewer">✕</button>
           </div>
         </div>
 
-        <!-- Stage area (art itself) -->
+        <!-- image stage -->
         <div
           id="viewerStage"
-          class="relative flex-1 bg-neutral-900/90 select-none grab flex items-center justify-center overflow-hidden"
+          class="relative flex-1 bg-neutral-100 select-none grab overflow-hidden"
         >
-          <div id="viewerImgWrapper" class="relative transition-transform duration-150 ease-out">
+          <!-- wrapper that we scale/translate -->
+          <div
+            id="viewerImgWrapper"
+            class="absolute top-1/2 left-1/2 will-change-transform origin-center"
+            style="
+              max-width:unset;
+              max-height:unset;
+              width:auto;
+              height:100%;
+              transform: translate(0px,0px) scale(1);
+            "
+          >
+            <!-- day image -->
             <img
               id="viewerImgDay"
-              class="block max-h-[70vh] max-w-[85vw] object-contain"
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 will-change-transform pointer-events-none max-h-full"
+              style="max-width:none;"
               alt="Artwork daylight view"
             />
+
+            <!-- night overlay -->
             <img
               id="viewerImgNight"
-              class="block max-h-[70vh] max-w-[85vw] object-contain absolute inset-0 pointer-events-none"
-              style="opacity:0;"
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 will-change-transform pointer-events-none max-h-full"
+              style="max-width:none; opacity:0;"
               alt="Artwork night view"
             />
           </div>
         </div>
 
-        <!-- Lighting slider (hidden if artwork doesn't have night variant) -->
+        <!-- lighting blend slider -->
         <div id="lightSliderWrapper" class="px-4 py-3 border-t bg-neutral-50 text-xs flex flex-col gap-2">
           <div class="flex items-center justify-between text-neutral-600">
             <span>Daylight</span>
@@ -167,80 +173,42 @@
           <input id="lightSlider" type="range" min="0" max="100" step="1" value="0" />
         </div>
 
-        <!-- Meta row -->
-        <div id="viewerMeta" class="px-4 py-2 text-[11px] text-neutral-500 bg-white border-t"></div>
+        <!-- meta -->
+        <div id="viewerMeta" class="px-4 py-2 text-xs text-neutral-500 border-t"></div>
       </div>
     </div>
 
-    <!-- VISUALIZER -->
-    <section id="visualize" class="py-10">
+    <!-- VISUALIZE IN YOUR SPACE -->
+    <section id="visualize" class="py-10" aria-labelledby="visualize-heading">
+      <h3 id="visualize-heading" class="sr-only">Visualize artwork on your wall</h3>
       <div class="border rounded-2xl">
         <div class="px-4 py-3 border-b text-lg font-semibold">Preview in Your Space</div>
-
         <div class="grid lg:grid-cols-5 gap-6 p-4">
-          <!-- Left: room stage + controls -->
           <div class="lg:col-span-3">
-            <div
-              id="roomStage"
-              class="aspect-[16/9] bg-neutral-100 rounded-2xl overflow-hidden relative border flex items-center justify-center"
-            >
-              <div
-                id="roomPlaceholder"
-                class="h-full w-full grid place-items-center text-neutral-500 p-6 text-center text-sm leading-relaxed"
-              >
+            <div id="roomStage" class="aspect-[16/9] bg-neutral-100 rounded-2xl overflow-hidden relative">
+              <div id="roomPlaceholder" class="h-full w-full grid place-items-center text-neutral-500 p-6 text-center">
                 <p>Upload a photo of your room or wall to preview the artwork on it.</p>
               </div>
-              <img
-                id="roomImg"
-                class="w-full h-full object-cover hidden"
-                alt="Your room preview"
-              />
+              <img id="roomImg" class="w-full h-full object-cover hidden" alt="Your room preview"/>
               <div id="overlayLayer" class="absolute inset-0"></div>
             </div>
-
-            <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-neutral-700">
-              <div class="flex items-center gap-2">
-                <label class="text-neutral-500 text-sm">Scale</label>
-                <input id="ovScale" type="range" min="0.4" max="2" step="0.05" value="0.6" />
-              </div>
-
-              <div class="flex items-center gap-2">
-                <label class="text-neutral-500 text-sm">Rotate</label>
-                <input id="ovRotate" type="range" min="-30" max="30" step="1" value="0" />
-              </div>
-
-              <button
-                id="ovReset"
-                class="px-3 py-1 border rounded text-sm bg-white"
-              >
-                Reset
-              </button>
+            <div class="flex flex-wrap items-center gap-3 mt-3">
+              <label class="text-sm text-neutral-500">Scale</label>
+              <input id="ovScale" type="range" min="0.4" max="2" step="0.05" value="0.6" />
+              <label class="text-sm text-neutral-500">Rotate</label>
+              <input id="ovRotate" type="range" min="-30" max="30" step="1" value="0" />
+              <button id="ovReset" class="px-3 py-1 border rounded">Reset</button>
             </div>
           </div>
-
-          <!-- Right: picker -->
           <div class="lg:col-span-2 space-y-4">
             <div class="border rounded-2xl p-4 bg-neutral-50">
-              <div class="text-sm text-neutral-600 mb-2 font-medium">Upload room/wall photo</div>
-              <input
-                id="roomFile"
-                type="file"
-                accept="image/*"
-                capture="environment"
-                class="block w-full text-sm bg-white border rounded px-2 py-1"
-              />
+              <div class="text-sm text-neutral-600 mb-2">Upload room/wall photo</div>
+              <input id="roomFile" type="file" accept="image/*" capture="environment" class="block w-full text-sm" />
             </div>
-
             <div>
-              <div class="text-sm mb-2 text-neutral-600 font-medium">Choose an artwork</div>
-              <div
-                id="picker"
-                class="max-h-72 overflow-auto grid grid-cols-2 sm:grid-cols-3 gap-2 pr-1 hide-scrollbar"
-              ></div>
-              <div
-                id="selectedMeta"
-                class="text-xs text-neutral-500 mt-2"
-              ></div>
+              <div class="text-sm mb-2 text-neutral-600">Choose an artwork</div>
+              <div id="picker" class="max-h-72 overflow-auto grid grid-cols-3 gap-2 pr-1 hide-scrollbar"></div>
+              <div id="selectedMeta" class="text-xs text-neutral-500 mt-2"></div>
             </div>
           </div>
         </div>
@@ -251,14 +219,8 @@
     <section id="favorites" class="py-10">
       <div class="border rounded-2xl">
         <div class="px-4 py-3 border-b text-lg font-semibold">Your Favorites</div>
-        <div
-          id="favoritesGrid"
-          class="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        ></div>
-        <p
-          id="noFavs"
-          class="p-4 text-sm text-neutral-500 hidden"
-        >
+        <div id="favoritesGrid" class="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        <p id="noFavs" class="p-4 text-sm text-neutral-500 hidden">
           You haven't saved any pieces yet. Tap ♡ on a piece to save it here.
         </p>
       </div>
@@ -267,586 +229,556 @@
     <!-- FOOTER -->
     <footer class="mt-14 pt-8 border-t text-sm text-neutral-500">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-10">
-        <div>
-          © <span id="year"></span>
-          <span class="font-medium text-neutral-700">Kala</span>.
-          Original & premium artwork by women.
-        </div>
+        <div>© <span id="year"></span> <span class="font-medium text-neutral-700">Kala</span>. Original & premium artwork by women.</div>
         <div>No logins to browse • No payments • Curated only</div>
       </div>
     </footer>
   </main>
 
-  <!-- APP SCRIPT -->
-  <script>
-  /* =========================
-     DATA LAYER / SEED CONTENT
-     ========================= */
+<script>
+/* =========================
+   CONFIG / CONSTANTS
+   ========================= */
 
-  const LS_KEY_ART = "curated-art-gallery:v1";
-  const LS_KEY_FAV = "kala:favorites:v1";
+const ARTWORKS_JSON_URL = "artworks.json"; // served from repo root
+const LS_KEY_FAV = "kala:favorites:v1";
 
-  const uid = () => Math.random().toString(36).slice(2);
+function uid() {
+  return Math.random().toString(36).slice(2);
+}
 
-  function loadArtworks() {
-    const raw = localStorage.getItem(LS_KEY_ART);
-    if (raw) {
-      try { return JSON.parse(raw); } catch(e) { return []; }
-    }
-    // Seed demo works
-    const seed = [
-      {
-        id: uid(),
-        title: "Quiet Mangroves",
-        artist: "A. Sen",
-        widthCm: 80,
-        heightCm: 60,
-        tags: ["nature","landscape"],
-        curated: true,
-        imageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-        dayImageDataUrl: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
-        nightImageDataUrl: null,
-        createdAt: Date.now()-86400000*4
-      },
-      {
-        id: uid(),
-        title: "City in Monsoon",
-        artist: "G. Mane",
-        widthCm: 60,
-        heightCm: 90,
-        tags: ["urban","rain"],
-        curated: true,
-        imageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
-        dayImageDataUrl: "https://images.unsplash.com/photo-1505765052322-75874acb0a05?q=80&w=1600&auto=format&fit=crop",
-        nightImageDataUrl: null,
-        createdAt: Date.now()-86400000*2
-      },
-    ];
-    localStorage.setItem(LS_KEY_ART, JSON.stringify(seed));
-    return seed;
+/* =========================
+   DOM REFERENCES
+   ========================= */
+
+// header / hero
+const heroImage       = document.getElementById("hero-image");
+const yearEl          = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+// gallery
+const galleryGrid     = document.getElementById("galleryGrid");
+const searchInput     = document.getElementById("search");
+const artistFilter    = document.getElementById("artistFilter");
+const noResults       = document.getElementById("noResults");
+
+// modal viewer
+const viewerEl            = document.getElementById("viewer");
+const viewerBackdrop      = document.getElementById("viewerBackdrop");
+const viewerStage         = document.getElementById("viewerStage");
+const viewerImgWrapper    = document.getElementById("viewerImgWrapper");
+const viewerImgDay        = document.getElementById("viewerImgDay");
+const viewerImgNight      = document.getElementById("viewerImgNight");
+const viewerTitle         = document.getElementById("viewerTitle");
+const viewerMeta          = document.getElementById("viewerMeta");
+const lightSlider         = document.getElementById("lightSlider");
+const lightSliderWrapper  = document.getElementById("lightSliderWrapper");
+const favToggleViewer     = document.getElementById("favToggleViewer");
+const zoomInBtn           = document.getElementById("zoomIn");
+const zoomOutBtn          = document.getElementById("zoomOut");
+const resetViewBtn        = document.getElementById("resetView");
+const closeViewerBtn      = document.getElementById("closeViewer");
+const zoomLabel           = document.getElementById("zoomLabel");
+
+// visualize in room
+const roomFile        = document.getElementById("roomFile");
+const roomImg         = document.getElementById("roomImg");
+const roomPlaceholder = document.getElementById("roomPlaceholder");
+const overlayLayer    = document.getElementById("overlayLayer");
+const picker          = document.getElementById("picker");
+const selectedMeta    = document.getElementById("selectedMeta");
+const ovScale         = document.getElementById("ovScale");
+const ovRotate        = document.getElementById("ovRotate");
+const ovReset         = document.getElementById("ovReset");
+
+// favorites section
+const favoritesGrid   = document.getElementById("favoritesGrid");
+const noFavs          = document.getElementById("noFavs");
+
+/* =========================
+   STATE
+   ========================= */
+
+let artworks = [];         // will load from artworks.json
+let favorites = loadFavorites();
+let currentArtwork = null;
+
+let zoom       = 1;
+let pan        = { x:0, y:0 };
+let dragging   = false;
+let startPt    = { x:0, y:0 };
+let startPan   = { x:0, y:0 };
+
+let pickId     = null;
+let ov         = { scale: 0.6, rot: 0, pos: {x:50,y:55} };
+let ovDragging = false;
+
+/* =========================
+   FAVORITES HELPERS
+   ========================= */
+
+function loadFavorites() {
+  const raw = localStorage.getItem(LS_KEY_FAV);
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch(e) { return []; }
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem(LS_KEY_FAV, JSON.stringify(favs));
+}
+
+function isFav(id) {
+  return favorites.includes(id);
+}
+
+function toggleFav(id) {
+  if (isFav(id)) {
+    favorites = favorites.filter(x => x !== id);
+  } else {
+    favorites = [id, ...favorites];
+  }
+  saveFavorites(favorites);
+  renderGallery();
+  renderFavorites();
+  updateFavInViewer();
+}
+
+/* =========================
+   VIEWER / MODAL LOGIC
+   ========================= */
+
+function lockBodyScroll() {
+  document.body.style.overflow = "hidden";
+}
+function unlockBodyScroll() {
+  document.body.style.overflow = "";
+}
+
+function updateViewerTransform() {
+  if (!viewerImgWrapper) return;
+  const t = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
+  viewerImgWrapper.style.transform = t;
+  zoomLabel.textContent = Math.round(zoom * 100) + "%";
+}
+
+function updateFavInViewer() {
+  if (!currentArtwork || !favToggleViewer) return;
+  if (isFav(currentArtwork.id)) {
+    favToggleViewer.textContent = "♥ Saved to favorites";
+    favToggleViewer.classList.add("fav-active");
+  } else {
+    favToggleViewer.textContent = "♡ Save to favorites";
+    favToggleViewer.classList.remove("fav-active");
+  }
+}
+
+function openViewer(art) {
+  currentArtwork = art;
+  zoom = 1;
+  pan = { x:0, y:0 };
+
+  const daySrc   = art.dayImageUrl || art.dayImageDataUrl || art.imageDataUrl || "";
+  const nightSrc = art.nightImageUrl || art.nightImageDataUrl || null;
+
+  viewerImgDay.src = daySrc;
+  viewerImgNight.style.opacity = 0;
+
+  if (nightSrc) {
+    viewerImgNight.src = nightSrc;
+    lightSliderWrapper.classList.remove("hidden");
+    lightSlider.value = 0;
+  } else {
+    viewerImgNight.src = daySrc;
+    lightSliderWrapper.classList.add("hidden");
   }
 
-  function saveArtworks(items) {
-    localStorage.setItem(LS_KEY_ART, JSON.stringify(items));
-  }
+  viewerTitle.textContent = `${art.title} — ${art.artist}`;
+  viewerMeta.textContent =
+    `Size: ${art.widthCm || "?"}×${art.heightCm || "?"} cm • ` +
+    `Tags: ${(art.tags || []).join(", ") || "none"}`;
 
-  function loadFavorites() {
-    const raw = localStorage.getItem(LS_KEY_FAV);
-    if (!raw) return [];
-    try { return JSON.parse(raw); } catch(e) { return []; }
-  }
+  updateViewerTransform();
+  updateFavInViewer();
 
-  function saveFavorites(favs) {
-    localStorage.setItem(LS_KEY_FAV, JSON.stringify(favs));
-  }
+  viewerEl.classList.remove("hidden");
+  lockBodyScroll();
+}
 
-  let artworks = loadArtworks();
-  let favorites = loadFavorites();
+function closeViewer() {
+  viewerEl.classList.add("hidden");
+  unlockBodyScroll();
+}
 
-  /* ==================
-     DOM REFERENCES
-     ================== */
+/* zoom controls */
+zoomInBtn.addEventListener("click", () => {
+  zoom = Math.min(4, zoom + 0.2);
+  updateViewerTransform();
+});
+zoomOutBtn.addEventListener("click", () => {
+  zoom = Math.max(0.25, zoom - 0.2);
+  updateViewerTransform();
+});
+resetViewBtn.addEventListener("click", () => {
+  zoom = 1;
+  pan  = { x:0, y:0 };
+  updateViewerTransform();
+});
 
-  // header / hero
-  const heroImage = document.getElementById("hero-image");
-  const yearEl = document.getElementById("year");
-  yearEl.textContent = new Date().getFullYear();
+/* close actions */
+closeViewerBtn.addEventListener("click", closeViewer);
+viewerBackdrop.addEventListener("click", closeViewer);
 
-  // gallery
-  const galleryGrid = document.getElementById("galleryGrid");
-  const searchInput = document.getElementById("search");
-  const artistFilter = document.getElementById("artistFilter");
-  const noResults = document.getElementById("noResults");
+/* wheel zoom */
+viewerStage.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  zoom = Math.min(4, Math.max(0.25, zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+  updateViewerTransform();
+}, { passive: false });
 
-  // modal viewer
-  const viewerEl = document.getElementById("viewer");
-  const viewerBackdrop = document.getElementById("viewerBackdrop");
-  const viewerStage = document.getElementById("viewerStage");
-  const viewerImgWrapper = document.getElementById("viewerImgWrapper");
-  const viewerImgDay = document.getElementById("viewerImgDay");
-  const viewerImgNight = document.getElementById("viewerImgNight");
-  const viewerTitle = document.getElementById("viewerTitle");
-  const viewerMeta = document.getElementById("viewerMeta");
-  const lightSlider = document.getElementById("lightSlider");
-  const lightSliderWrapper = document.getElementById("lightSliderWrapper");
-  const favToggleViewer = document.getElementById("favToggleViewer");
-  const zoomInBtn = document.getElementById("zoomIn");
-  const zoomOutBtn = document.getElementById("zoomOut");
-  const resetViewBtn = document.getElementById("resetView");
-  const closeViewerBtn = document.getElementById("closeViewer");
-  const zoomLabel = document.getElementById("zoomLabel");
+/* drag / pan */
+viewerStage.addEventListener("mousedown", (e) => {
+  dragging = true;
+  viewerStage.classList.remove("grab");
+  viewerStage.classList.add("grabbing");
+  startPt  = { x: e.clientX, y: e.clientY };
+  startPan = { ...pan };
+});
 
-  // visualize in room
-  const roomFile = document.getElementById("roomFile");
-  const roomImg = document.getElementById("roomImg");
-  const roomPlaceholder = document.getElementById("roomPlaceholder");
-  const overlayLayer = document.getElementById("overlayLayer");
-  const picker = document.getElementById("picker");
-  const selectedMeta = document.getElementById("selectedMeta");
-  const ovScale = document.getElementById("ovScale");
-  const ovRotate = document.getElementById("ovRotate");
-  const ovReset = document.getElementById("ovReset");
+window.addEventListener("mouseup", () => {
+  dragging = false;
+  viewerStage.classList.add("grab");
+  viewerStage.classList.remove("grabbing");
+});
 
-  // favorites section
-  const favoritesGrid = document.getElementById("favoritesGrid");
-  const noFavs = document.getElementById("noFavs");
+viewerStage.addEventListener("mousemove", (e) => {
+  if (!dragging) return;
+  const dx = e.clientX - startPt.x;
+  const dy = e.clientY - startPt.y;
+  pan = { x: startPan.x + dx, y: startPan.y + dy };
+  updateViewerTransform();
+});
 
-  /* ==================
-     STATE
-     ================== */
+/* lighting blend slider */
+lightSlider.addEventListener("input", (e) => {
+  const alpha = parseInt(e.target.value, 10) / 100;
+  viewerImgNight.style.opacity = alpha;
+});
 
-  let currentArtwork = null;
-  let zoom = 1;
-  let pan = {x:0,y:0};
-  let dragging = false;
-  let startPt = {x:0,y:0};
-  let startPan = {x:0,y:0};
+/* fav from inside viewer */
+favToggleViewer.addEventListener("click", () => {
+  if (!currentArtwork) return;
+  toggleFav(currentArtwork.id);
+});
 
-  let pickId = null;
-  let ov = { scale: 0.6, rot: 0, pos: {x:50,y:55} };
-  let ovDragging = false;
+/* =========================
+   VISUALIZE IN ROOM
+   ========================= */
 
-  /* ==================
-     HELPERS
-     ================== */
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
+function setRoomPlaceholder(show) {
+  roomPlaceholder.classList.toggle("hidden", !show);
+  roomImg.classList.toggle("hidden", show);
+}
 
-  function isFav(id) {
-    return favorites.includes(id);
-  }
+roomFile.addEventListener("change", async (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const url = await fileToDataUrl(f);
+  roomImg.src = url;
+  setRoomPlaceholder(false);
+});
 
-  function toggleFav(id) {
-    if (isFav(id)) {
-      favorites = favorites.filter(x => x !== id);
-    } else {
-      favorites = [id, ...favorites];
-    }
-    saveFavorites(favorites);
-    renderGallery();
-    renderFavorites();
-    updateFavInViewer();
-  }
+function renderPicker() {
+  const curated = artworks
+    .filter(a => a.curated !== false)
+    .sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-  function updateFavInViewer() {
-    if (!currentArtwork || !favToggleViewer) return;
-    if (isFav(currentArtwork.id)) {
-      favToggleViewer.textContent = "♥ Saved to favorites";
-      favToggleViewer.classList.add("fav-active");
-    } else {
-      favToggleViewer.textContent = "♡ Save to favorites";
-      favToggleViewer.classList.remove("fav-active");
-    }
-  }
-
-  function setHero() {
-    const curated = artworks
-      .filter(a => a.curated !== false)
-      .sort((a,b) => b.createdAt - a.createdAt);
-
-    const top = curated[0] || artworks[0];
-    if (top && heroImage) {
-      heroImage.src = top.imageDataUrl || top.dayImageDataUrl || "";
-    }
-  }
-
-  function lockBodyScroll() {
-    document.body.style.overflow = "hidden";
-  }
-  function unlockBodyScroll() {
-    document.body.style.overflow = "";
-  }
-
-  /* ==================
-     GALLERY RENDER
-     ================== */
-
-  function renderArtistFilter() {
-    const unique = Array.from(new Set(artworks.map(a=>a.artist)))
-      .filter(Boolean)
-      .sort();
-    artistFilter.innerHTML =
-      '<option value="all">All artists</option>' +
-      unique.map(a => `<option value="${a}">${a}</option>`).join("");
-  }
-
-  function renderGallery() {
-    if (!galleryGrid) return;
-
-    const q = (searchInput.value || "").trim().toLowerCase();
-    const af = artistFilter.value;
-
-    const curated = artworks
-      .filter(a => a.curated !== false)
-      .sort((a,b) => b.createdAt - a.createdAt);
-
-    const filtered = curated.filter(a => {
-      const haystack = [a.title, a.artist, ...(a.tags||[])]
-        .join(" ")
-        .toLowerCase();
-      const matchesQuery = !q || haystack.includes(q);
-      const matchesArtist = af === "all" || a.artist === af;
-      return matchesQuery && matchesArtist;
-    });
-
-    noResults.classList.toggle("hidden", filtered.length > 0);
-
-    galleryGrid.innerHTML = filtered.map(a => {
-      const favClass = isFav(a.id) ? "fav-active" : "text-neutral-400";
-      const thumb = a.imageDataUrl || a.dayImageDataUrl || "";
-      return `
-        <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow relative bg-white">
-          <button data-open="${a.id}" class="block text-left w-full">
-            <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
-              <img
-                alt="${a.title}"
-                src="${thumb}"
-                class="w-full h-full object-cover hover:scale-105 transition-transform"
-              />
-            </div>
-            <div class="p-3 flex items-start justify-between gap-2">
-              <div class="flex-1 min-w-0">
-                <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
-                <div class="text-xs text-neutral-500 truncate">
-                  ${a.artist} • ${a.widthCm||"?"}×${a.heightCm||"?"} cm
-                </div>
-              </div>
-              <button data-fav="${a.id}" class="text-xs ${favClass} whitespace-nowrap">♡</button>
-            </div>
-          </button>
+  picker.innerHTML = curated.map(a => {
+    const thumb = a.dayImageUrl || a.imageDataUrl || "";
+    const active = (pickId === a.id)
+      ? "ring-2 ring-neutral-900"
+      : "border-neutral-200";
+    return `
+      <button
+        data-pick="${a.id}"
+        class="relative rounded-lg overflow-hidden border bg-white ${active}"
+      >
+        <img
+          src="${thumb}"
+          alt="${a.title}"
+          class="w-full h-24 object-cover"
+        />
+        <div class="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 truncate">
+          ${a.title}
         </div>
-      `;
-    }).join("");
+      </button>
+    `;
+  }).join("");
 
-    // open viewer click
-    galleryGrid.querySelectorAll("[data-open]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-open");
-        const art = artworks.find(x => x.id === id);
-        if (art) openViewer(art);
-      });
+  picker.querySelectorAll("[data-pick]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      pickId = btn.getAttribute("data-pick");
+      updateOverlay();
+      renderPicker();
     });
-
-    // favorite click
-    galleryGrid.querySelectorAll("[data-fav]").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute("data-fav");
-        toggleFav(id);
-      });
-    });
-  }
-
-  /* ==================
-     VIEWER (LIGHTBOX)
-     ================== */
-
-  function updateViewerTransform() {
-    // safety guard so we don't crash at startup
-    if (!viewerImgWrapper) return;
-    const t = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
-    viewerImgWrapper.style.transform = t;
-    zoomLabel.textContent = Math.round(zoom * 100) + "%";
-  }
-
-  function openViewer(art) {
-    currentArtwork = art;
-    zoom = 1;
-    pan = { x:0, y:0 };
-
-    const daySrc   = art.dayImageDataUrl || art.imageDataUrl || "";
-    const nightSrc = art.nightImageDataUrl;
-
-    viewerImgDay.src = daySrc;
-    viewerImgNight.style.opacity = 0;
-
-    if (nightSrc) {
-      viewerImgNight.src = nightSrc;
-      lightSliderWrapper.classList.remove("hidden");
-      lightSlider.value = 0;
-      viewerImgNight.style.opacity = 0;
-    } else {
-      viewerImgNight.src = daySrc;
-      lightSliderWrapper.classList.add("hidden");
-      viewerImgNight.style.opacity = 0;
-    }
-
-    viewerTitle.textContent = `${art.title} — ${art.artist}`;
-    viewerMeta.textContent =
-      `Size: ${art.widthCm||"?"}×${art.heightCm||"?"} cm • ` +
-      `Tags: ${(art.tags||[]).join(", ")||"none"}`;
-
-    updateViewerTransform();
-    updateFavInViewer();
-
-    viewerEl.classList.remove("hidden");
-    lockBodyScroll();
-  }
-
-  function closeViewer() {
-    viewerEl.classList.add("hidden");
-    unlockBodyScroll();
-  }
-
-  // zoom buttons
-  zoomInBtn.addEventListener("click", () => {
-    zoom = Math.min(4, zoom + 0.2);
-    updateViewerTransform();
   });
 
-  zoomOutBtn.addEventListener("click", () => {
-    zoom = Math.max(0.25, zoom - 0.2);
-    updateViewerTransform();
-  });
+  const art = artworks.find(a => a.id === pickId);
+  selectedMeta.textContent = art
+    ? `Selected: ${art.title} — ${art.widthCm || "?"}×${art.heightCm || "?"} cm`
+    : "";
+}
 
-  resetViewBtn.addEventListener("click", () => {
-    zoom = 1;
-    pan = { x:0, y:0 };
-    updateViewerTransform();
-  });
+function updateOverlay() {
+  overlayLayer.innerHTML = "";
+  const art = artworks.find(a => a.id === pickId);
+  if (!art) return;
 
-  // close actions
-  closeViewerBtn.addEventListener("click", closeViewer);
-  viewerBackdrop.addEventListener("click", closeViewer);
+  const box = document.createElement("div");
+  box.title = "Drag to reposition";
+  box.className = "absolute shadow bg-white p-2 rounded-sm";
+  box.style.left = ov.pos.x + "%";
+  box.style.top = ov.pos.y + "%";
+  box.style.transform = `translate(-50%, -50%) rotate(${ov.rot}deg)`;
+  box.style.width = Math.max(10, 40 * ov.scale) + "%";
 
-  // wheel zoom
-  viewerStage.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    zoom = Math.min(4, Math.max(0.25, zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
-    updateViewerTransform();
-  }, { passive: false });
+  const aspect = (art.widthCm || 4) / (art.heightCm || 3);
+  box.style.aspectRatio = aspect;
 
-  // drag / pan
-  viewerStage.addEventListener("mousedown", (e) => {
-    dragging = true;
-    viewerStage.classList.remove("grab");
-    viewerStage.classList.add("grabbing");
-    startPt = { x: e.clientX, y: e.clientY };
-    startPan = { ...pan };
-  });
+  const img = document.createElement("img");
+  img.src = art.dayImageUrl || art.imageDataUrl || "";
+  img.className = "w-full h-full object-cover";
+  box.appendChild(img);
 
-  window.addEventListener("mouseup", () => {
-    dragging = false;
-    viewerStage.classList.add("grab");
-    viewerStage.classList.remove("grabbing");
-  });
+  overlayLayer.appendChild(box);
 
-  viewerStage.addEventListener("mousemove", (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - startPt.x;
-    const dy = e.clientY - startPt.y;
-    pan = { x: startPan.x + dx, y: startPan.y + dy };
-    updateViewerTransform();
-  });
+  box.addEventListener("mousedown", () => { ovDragging = true; });
+  window.addEventListener("mouseup", () => { ovDragging = false; });
 
-  // lighting blend slider
-  lightSlider.addEventListener("input", (e) => {
-    const alpha = parseInt(e.target.value, 10) / 100;
-    viewerImgNight.style.opacity = alpha;
-  });
-
-  // save/remove favorite from inside modal
-  favToggleViewer.addEventListener("click", () => {
-    if (!currentArtwork) return;
-    toggleFav(currentArtwork.id);
-  });
-
-  /* ==================
-     VISUALIZE IN ROOM
-     ================== */
-
-  function setRoomPlaceholder(show) {
-    roomPlaceholder.classList.toggle("hidden", !show);
-    roomImg.classList.toggle("hidden", show);
-  }
-
-  roomFile.addEventListener("change", async (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (!f) return;
-    const url = await fileToDataUrl(f);
-    roomImg.src = url;
-    setRoomPlaceholder(false);
-  });
-
-  function renderPicker() {
-    picker.innerHTML = artworks
-      .filter(a => a.curated !== false)
-      .map(a => {
-        const thumb = a.imageDataUrl || a.dayImageDataUrl || "";
-        const activeClass = (pickId === a.id)
-          ? "ring-2 ring-neutral-900"
-          : "border-neutral-200";
-        return `
-          <button
-            data-pick="${a.id}"
-            class="relative rounded-lg overflow-hidden border bg-white ${activeClass}"
-          >
-            <img
-              src="${thumb}"
-              alt="${a.title}"
-              class="w-full h-24 object-cover"
-            />
-            <div class="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-[10px] px-1 py-0.5 truncate">
-              ${a.title}
-            </div>
-          </button>
-        `;
-      })
-      .join("");
-
-    picker.querySelectorAll("[data-pick]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        pickId = btn.getAttribute("data-pick");
-        updateOverlay();
-        renderPicker(); // re-render to show highlight ring
-      });
-    });
-
-    const art = artworks.find(a => a.id === pickId);
-    selectedMeta.textContent = art
-      ? `Selected: ${art.title} — ${art.widthCm||"?"}×${art.heightCm||"?"} cm`
-      : "";
-  }
-
-  function updateOverlay() {
-    overlayLayer.innerHTML = "";
-    const art = artworks.find(a => a.id === pickId);
-    if (!art) return;
-
-    // draggable "art on wall"
-    const box = document.createElement("div");
-    box.title = "Drag to reposition";
-    box.className = "absolute shadow bg-white p-2 rounded-sm";
+  overlayLayer.addEventListener("mousemove", (e) => {
+    if (!ovDragging) return;
+    const rect = overlayLayer.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    ov.pos = {
+      x: Math.max(0, Math.min(100, x)),
+      y: Math.max(0, Math.min(100, y))
+    };
     box.style.left = ov.pos.x + "%";
     box.style.top = ov.pos.y + "%";
-    box.style.transform = `translate(-50%, -50%) rotate(${ov.rot}deg)`;
-    box.style.width = Math.max(10, 40 * ov.scale) + "%";
+  }, { once: true });
+}
 
-    const aspect = (art.widthCm || 4) / (art.heightCm || 3);
-    box.style.aspectRatio = aspect;
+ovScale.addEventListener("input", (e) => {
+  ov.scale = parseFloat(e.target.value);
+  updateOverlay();
+});
+ovRotate.addEventListener("input", (e) => {
+  ov.rot = parseFloat(e.target.value);
+  updateOverlay();
+});
+ovReset.addEventListener("click", () => {
+  ov = { scale:0.6, rot:0, pos:{x:50,y:55} };
+  updateOverlay();
+});
 
-    const img = document.createElement("img");
-    img.src = art.imageDataUrl || art.dayImageDataUrl || "";
-    img.className = "w-full h-full object-cover";
-    box.appendChild(img);
+/* =========================
+   RENDER FAVORITES
+   ========================= */
 
-    overlayLayer.appendChild(box);
-
-    box.addEventListener("mousedown", () => { ovDragging = true; });
-    window.addEventListener("mouseup", () => { ovDragging = false; });
-
-    overlayLayer.addEventListener("mousemove", (e) => {
-      if (!ovDragging) return;
-      const rect = overlayLayer.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      ov.pos = {
-        x: Math.max(0, Math.min(100, x)),
-        y: Math.max(0, Math.min(100, y))
-      };
-      box.style.left = ov.pos.x + "%";
-      box.style.top = ov.pos.y + "%";
-    }, { once: true });
+function renderFavorites() {
+  if (!favorites.length) {
+    favoritesGrid.innerHTML = "";
+    noFavs.classList.remove("hidden");
+    return;
   }
+  noFavs.classList.add("hidden");
 
-  ovScale.addEventListener("input", (e) => {
-    ov.scale = parseFloat(e.target.value);
-    updateOverlay();
+  const favArtworks = favorites
+    .map(id => artworks.find(a => a.id === id))
+    .filter(Boolean);
+
+  favoritesGrid.innerHTML = favArtworks.map(a => {
+    const thumb = a.dayImageUrl || a.imageDataUrl || "";
+    return `
+      <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow bg-white">
+        <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
+          <img
+            alt="${a.title}"
+            src="${thumb}"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="p-3 flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
+            <div class="text-xs text-neutral-500 truncate">${a.artist}</div>
+          </div>
+          <button data-fav-remove="${a.id}" class="text-xs text-neutral-400 whitespace-nowrap">✕</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  favoritesGrid.querySelectorAll("[data-fav-remove]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-fav-remove");
+      favorites = favorites.filter(x => x !== id);
+      saveFavorites(favorites);
+      renderGallery();
+      renderFavorites();
+      updateFavInViewer();
+    });
+  });
+}
+
+/* =========================
+   GALLERY RENDER
+   ========================= */
+
+function setHero() {
+  if (!heroImage) return;
+  const curated = artworks
+    .filter(a => a.curated !== false)
+    .sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  const top = curated[0] || artworks[0];
+  if (top) {
+    heroImage.src = top.dayImageUrl || top.imageDataUrl || "";
+  }
+}
+
+function renderArtistFilter() {
+  const unique = Array.from(new Set(artworks.map(a => a.artist)))
+    .filter(Boolean)
+    .sort();
+  artistFilter.innerHTML =
+    '<option value="all">All artists</option>' +
+    unique.map(a => `<option value="${a}">${a}</option>`).join("");
+}
+
+function renderGallery() {
+  if (!galleryGrid) return;
+
+  const q  = (searchInput.value || "").trim().toLowerCase();
+  const af = artistFilter.value;
+
+  const curated = artworks
+    .filter(a => a.curated !== false)
+    .sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  const filtered = curated.filter(a => {
+    const haystack = [a.title, a.artist, ...(a.tags || [])]
+      .join(" ")
+      .toLowerCase();
+    const matchesQuery  = !q || haystack.includes(q);
+    const matchesArtist = af === "all" || a.artist === af;
+    return matchesQuery && matchesArtist;
   });
 
-  ovRotate.addEventListener("input", (e) => {
-    ov.rot = parseFloat(e.target.value);
-    updateOverlay();
-  });
+  noResults.classList.toggle("hidden", filtered.length > 0);
 
-  ovReset.addEventListener("click", () => {
-    ov = { scale:0.6, rot:0, pos:{x:50,y:55} };
-    updateOverlay();
-  });
-
-  /* ==================
-     FAVORITES RENDER
-     ================== */
-
-  function renderFavorites() {
-    if (!favorites.length) {
-      favoritesGrid.innerHTML = "";
-      noFavs.classList.remove("hidden");
-      return;
-    }
-    noFavs.classList.add("hidden");
-
-    const favArtworks = favorites
-      .map(id => artworks.find(a => a.id === id))
-      .filter(Boolean);
-
-    favoritesGrid.innerHTML = favArtworks.map(a => {
-      const thumb = a.imageDataUrl || a.dayImageDataUrl || "";
-      return `
-        <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow bg-white">
+  galleryGrid.innerHTML = filtered.map(a => {
+    const favClass = isFav(a.id) ? "fav-active" : "text-neutral-400";
+    const thumb    = a.dayImageUrl || a.imageDataUrl || "";
+    return `
+      <div class="rounded-2xl overflow-hidden border hover:shadow transition-shadow relative bg-white">
+        <button data-open="${a.id}" class="block text-left w-full">
           <div class="aspect-[3/4] bg-neutral-100 overflow-hidden">
             <img
               alt="${a.title}"
               src="${thumb}"
-              class="w-full h-full object-cover"
+              class="w-full h-full object-cover hover:scale-105 transition-transform"
             />
           </div>
           <div class="p-3 flex items-start justify-between gap-2">
             <div class="flex-1 min-w-0">
               <div class="text-sm font-medium leading-tight truncate">${a.title}</div>
-              <div class="text-xs text-neutral-500 truncate">${a.artist}</div>
+              <div class="text-xs text-neutral-500 truncate">
+                ${a.artist} • ${a.widthCm || "?"}×${a.heightCm || "?"} cm
+              </div>
             </div>
-            <button data-fav-remove="${a.id}" class="text-xs text-neutral-400 whitespace-nowrap">✕</button>
+            <button data-fav="${a.id}" class="text-xs ${favClass} whitespace-nowrap">♡</button>
           </div>
-        </div>
-      `;
-    }).join("");
+        </button>
+      </div>
+    `;
+  }).join("");
 
-    favoritesGrid.querySelectorAll("[data-fav-remove]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-fav-remove");
-        favorites = favorites.filter(x => x !== id);
-        saveFavorites(favorites);
-        renderGallery();
-        renderFavorites();
-        updateFavInViewer();
-      });
+  // open in viewer
+  galleryGrid.querySelectorAll("[data-open]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-open");
+      const art = artworks.find(x => x.id === id);
+      if (art) openViewer(art);
     });
+  });
+
+  // fav toggle
+  galleryGrid.querySelectorAll("[data-fav]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute("data-fav");
+      toggleFav(id);
+    });
+  });
+}
+
+/* =========================
+   INIT / LOAD DATA
+   ========================= */
+
+async function fetchArtworksJson() {
+  // load curated artworks from artworks.json in the repo
+  const resp = await fetch(ARTWORKS_JSON_URL, {
+    cache: "no-store"
+  });
+  const data = await resp.json();
+
+  // normalize keys so the rest of the app can expect consistent fields
+  return data.map(item => ({
+    ...item,
+    imageDataUrl:     item.dayImageUrl || item.imageDataUrl || "",
+    dayImageDataUrl:  item.dayImageUrl || item.imageDataUrl || "",
+    nightImageDataUrl:item.nightImageUrl || null
+  }));
+}
+
+async function init() {
+  // 1. load artworks.json
+  artworks = await fetchArtworksJson();
+
+  // 2. choose default pick for "visualize in your space"
+  if (!pickId && artworks.length) {
+    const curated = artworks.filter(a => a.curated !== false);
+    pickId = (curated[0] || artworks[0]).id;
   }
 
-  /* ==================
-     SEARCH / FILTER
-     ================== */
+  // 3. render everything
+  setHero();
+  renderArtistFilter();
+  renderGallery();
+  renderFavorites();
+  renderPicker();
+  updateOverlay();
+}
 
-  searchInput.addEventListener("input", renderGallery);
-  artistFilter.addEventListener("change", renderGallery);
+init();
 
-  /* ==================
-     FIRST RENDER
-     ================== */
+/* =========================
+   EVENT LISTENERS
+   ========================= */
 
-  function renderAll() {
-    setHero();
-    renderArtistFilter();
-    renderGallery();
-    renderFavorites();
-
-    // initial pick for room preview
-    if (!pickId && artworks.length) {
-      pickId = artworks.find(a => a.curated !== false)?.id || artworks[0].id;
-    }
-    renderPicker();
-    updateOverlay();
-  }
-
-  renderAll();
-  </script>
+searchInput.addEventListener("input", renderGallery);
+artistFilter.addEventListener("change", renderGallery);
+</script>
 </body>
 </html>
